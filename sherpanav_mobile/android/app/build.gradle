@@ -24,8 +24,8 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.sherpanav.alpine"
-    compileSdk 34
-    ndkVersion flutter.ndkVersion
+    compileSdk = flutter.compileSdkVersion
+    ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -42,8 +42,8 @@ android {
 
     defaultConfig {
         applicationId "com.sherpanav.alpine"
-        minSdkVersion 21
-        targetSdkVersion 34
+        minSdkVersion = flutter.minSdkVersion
+        targetSdkVersion = flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
