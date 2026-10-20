@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/ams_entry.dart';
+import '../data/models/ams_entry.dart';
 
 class AMSCalculatorService {
   static final AMSCalculatorService instance = AMSCalculatorService._internal();

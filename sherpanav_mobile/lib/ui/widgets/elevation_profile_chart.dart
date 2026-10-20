@@ -30,7 +30,7 @@ class ElevationProfileChart extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.between,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text('ELEVATION PROFILE', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFFF59E0B))),
               Text('Peak: ${maxAlt}m', style: const TextStyle(fontSize: 10, fontFamily: 'monospace', color: Colors.white70)),
