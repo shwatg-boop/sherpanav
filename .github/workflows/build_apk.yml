@@ -34,6 +34,7 @@ jobs:
           # Backup custom files
           cp pubspec.yaml /tmp/pubspec.yaml
           cp android/app/src/main/AndroidManifest.xml /tmp/AndroidManifest.xml
+          cp android/app/release.keystore /tmp/release.keystore
           
           # Remove manually created android folder and let Flutter generate canonical harness
           rm -rf android
@@ -42,6 +43,10 @@ jobs:
           # Restore our custom configurations
           cp /tmp/pubspec.yaml pubspec.yaml
           cp /tmp/AndroidManifest.xml android/app/src/main/AndroidManifest.xml
+          cp /tmp/release.keystore android/app/release.keystore
+
+          # Apply permanent release signing with v1 and v2 scheme
+          python3 configure_signing.py
 
       - name: Install Dependencies
         run: |
