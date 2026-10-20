@@ -9,6 +9,8 @@ jobs:
   build:
     name: Build Release APK
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout Code
@@ -43,3 +45,20 @@ jobs:
           name: SherpaNav-Release-APK
           path: sherpanav_mobile/build/app/outputs/flutter-apk/app-release.apk
           retention-days: 30
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: github.ref == 'refs/heads/main'
+        with:
+          tag_name: v1.0.0-alpha
+          name: "SherpaNav Mobile v1.0.0 (Release APK)"
+          body: |
+            ### 🏔️ SherpaNav Mobile v1.0.0
+            - **100% Offline Himalayan Navigation & Topo Engine**
+            - **21 Trails, 56 Routes & 405 Teahouses pre-loaded**
+            - **Altitude & Barometer Sensor Telemetry**
+            - **Lake Louise Clinical AMS Diagnostic Calculator**
+            - **Emergency SOS & Telemetry Dispatcher**
+          files: sherpanav_mobile/build/app/outputs/flutter-apk/app-release.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
