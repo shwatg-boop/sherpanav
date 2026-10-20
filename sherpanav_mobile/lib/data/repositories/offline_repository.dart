@@ -1,9 +1,36 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
 import '../models/trek.dart';
 import '../models/route_model.dart';
 import '../models/accommodation.dart';
+
+class OverviewTrailTrack {
+  final String routeId;
+  final String routeTitle;
+  final String trekId;
+  final String trekTitle;
+  final String region;
+  final Color color;
+  final List<LatLng> coordinates;
+  final int maxAltitudeM;
+  final int totalDays;
+  final List<Map<String, dynamic>> waypoints;
+
+  OverviewTrailTrack({
+    required this.routeId,
+    required this.routeTitle,
+    required this.trekId,
+    required this.trekTitle,
+    required this.region,
+    required this.color,
+    required this.coordinates,
+    required this.maxAltitudeM,
+    required this.totalDays,
+    required this.waypoints,
+  });
+}
 
 class OfflineRepository {
   static final OfflineRepository instance = OfflineRepository._internal();
@@ -83,13 +110,94 @@ class OfflineRepository {
     return itineraries[routeId] ?? [];
   }
 
+  Map<String, dynamic>? getTrackDataForRoute(String routeId) {
+    // 1. Exact match
+    if (trailTracks.containsKey(routeId)) {
+      return trailTracks[routeId];
+    }
+
+    // 2. Prefix fallback matching (e.g. ABC_R002 -> ABC_R001, AC_R003 -> AC_R002)
+    final prefix = routeId.split('_').first.split('-').first;
+    final fallbackKey = trailTracks.keys.where((k) => k.startsWith(prefix)).firstOrNull;
+    if (fallbackKey != null) {
+      return trailTracks[fallbackKey];
+    }
+
+    // 3. Fallback to another route in the same trek
+    final route = getRouteById(routeId);
+    if (route != null) {
+      final trekRoutes = getRoutesByTrekId(route.trekId);
+      for (final tr in trekRoutes) {
+        if (trailTracks.containsKey(tr.id)) {
+          return trailTracks[tr.id];
+        }
+      }
+    }
+
+    // 4. Default baseline track
+    return trailTracks['ABC_R001'];
+  }
+
   List<LatLng> getCoordinatesForRoute(String routeId) {
-    final track = trailTracks[routeId];
+    final track = getTrackDataForRoute(routeId);
     if (track != null && track['coordinates'] is List) {
       final List<dynamic> raw = track['coordinates'];
       return raw.map((c) => LatLng((c[0] as num).toDouble(), (c[1] as num).toDouble())).toList();
     }
     return [];
+  }
+
+  List<Map<String, dynamic>> getWaypointsForRoute(String routeId) {
+    final track = getTrackDataForRoute(routeId);
+    if (track != null && track['waypoints'] is List) {
+      final List<dynamic> raw = track['waypoints'];
+      return raw.map((w) => Map<String, dynamic>.from(w as Map)).toList();
+    }
+    return [];
+  }
+
+  Color getRegionColor(String? region) {
+    final r = (region ?? '').toLowerCase();
+    if (r.contains('annapurna')) return const Color(0xFF10B981); // Emerald
+    if (r.contains('everest') || r.contains('khumbu')) return const Color(0xFF38BDF8); // Sky Blue
+    if (r.contains('langtang') || r.contains('helambu')) return const Color(0xFFF43F5E); // Rose
+    if (r.contains('manaslu')) return const Color(0xFFA855F7); // Purple
+    if (r.contains('rolwaling') || r.contains('gaurishankar')) return const Color(0xFFF59E0B); // Amber
+    if (r.contains('dolp') || r.contains('phoksundo')) return const Color(0xFF14B8A6); // Teal
+    if (r.contains('makalu')) return const Color(0xFF84CC16); // Lime
+    if (r.contains('far-west') || r.contains('badimalika') || r.contains('api')) return const Color(0xFF06B6D4); // Cyan
+    return const Color(0xFFEAB308); // Gold
+  }
+
+  List<OverviewTrailTrack> getAllOverviewTracks() {
+    final List<OverviewTrailTrack> list = [];
+    final Set<String> renderedPrefixes = {};
+
+    for (final trek in treks) {
+      final trekRoutes = getRoutesByTrekId(trek.id);
+      if (trekRoutes.isEmpty) continue;
+      final primaryRoute = trekRoutes.where((r) => r.variantTag.toLowerCase().contains('classic')).firstOrNull ?? trekRoutes.first;
+      final coords = getCoordinatesForRoute(primaryRoute.id);
+      if (coords.length > 1) {
+        final prefix = primaryRoute.id.split('_').first.split('-').first;
+        if (!renderedPrefixes.contains(prefix)) {
+          renderedPrefixes.add(prefix);
+          list.add(OverviewTrailTrack(
+            routeId: primaryRoute.id,
+            routeTitle: primaryRoute.title,
+            trekId: trek.id,
+            trekTitle: trek.title,
+            region: trek.region,
+            color: getRegionColor(trek.region),
+            coordinates: coords,
+            maxAltitudeM: primaryRoute.maxAltitudeM,
+            totalDays: primaryRoute.totalDays,
+            waypoints: getWaypointsForRoute(primaryRoute.id),
+          ));
+        }
+      }
+    }
+    return list;
   }
 
   List<Accommodation> getAccommodations() => accommodations;

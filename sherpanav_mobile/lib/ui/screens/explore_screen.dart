@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../data/models/trek.dart';
 import '../../data/repositories/offline_repository.dart';
 import 'plan_wizard_screen.dart';
+import 'route_map_screen.dart';
 
 class ExploreScreen extends StatefulWidget {
   final Function(String routeId)? onOpenRouteMap;
@@ -141,6 +142,25 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
+                            OutlinedButton.icon(
+                              style: OutlinedButton.styleFrom(
+                                side: const BorderSide(color: Color(0xFF1E293B)),
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                              ),
+                              onPressed: () {
+                                final primaryRoute = routes.firstOrNull;
+                                if (primaryRoute != null) {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => RouteMapScreen(initialRouteId: primaryRoute.id),
+                                    ),
+                                  );
+                                }
+                              },
+                              icon: const Text('🗺️', style: TextStyle(fontSize: 13)),
+                              label: const Text('View on Map', style: TextStyle(fontSize: 12, color: Colors.white70)),
+                            ),
+                            const SizedBox(width: 8),
                             ElevatedButton.icon(
                               onPressed: () {
                                 Navigator.of(context).push(
