@@ -179,7 +179,7 @@ class _AMSTrackerScreenState extends State<AMSTrackerScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.between,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(label, style: const TextStyle(fontSize: 12, color: Colors.white70)),
             Text(val.toString(), style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFFF59E0B))),

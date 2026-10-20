@@ -27,7 +27,7 @@ class AppTheme {
         surface: obsidianCard,
         onSurface: textPrimary,
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: obsidianCard,
         elevation: 0,
         shape: RoundedRectangleBorder(

@@ -239,7 +239,7 @@ class _PlanWizardScreenState extends State<PlanWizardScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.between,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text('Pack Readiness', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
             Text('$pct% Ready ($packedCount/$totalCount)', style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFFF59E0B))),
