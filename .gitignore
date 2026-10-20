@@ -1,0 +1,21 @@
+# Flutter & Dart build artifacts
+sherpanav_mobile/build/
+sherpanav_mobile/.dart_tool/
+sherpanav_mobile/.flutter-plugins
+sherpanav_mobile/.flutter-plugins-dependencies
+sherpanav_mobile/.packages
+sherpanav_mobile/.pub-cache/
+sherpanav_mobile/.pub/
+
+# Android build artifacts
+sherpanav_mobile/android/.gradle/
+sherpanav_mobile/android/local.properties
+sherpanav_mobile/android/app/build/
+*.apk
+*.aab
+
+# Logs & temp files
+*.log
+*.tmp
+.DS_Store
+Thumbs.db

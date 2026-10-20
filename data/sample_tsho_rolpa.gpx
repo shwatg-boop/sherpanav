@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="SherpaNav GPS Engine" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>Tsho Rolpa Glacial Lake High-Resolution GPX Track</name>
+    <desc>Sample recorded GPS trail track following the Rolwaling river canyon to Tsho Rolpa Lake</desc>
+  </metadata>
+  <wpt lat="27.8056" lon="86.2083"><name>Chetchet Trailhead</name><ele>1398</ele></wpt>
+  <wpt lat="27.8167" lon="86.2250"><name>Simigaun Village</name><ele>2000</ele></wpt>
+  <wpt lat="27.8486" lon="86.3542"><name>Beding Sherpa Village</name><ele>3690</ele></wpt>
+  <wpt lat="27.8514" lon="86.4194"><name>Na Alpine Pasture</name><ele>4180</ele></wpt>
+  <wpt lat="27.8547" lon="86.4719"><name>Tsho-Rolpa Lake Crest</name><ele>4580</ele></wpt>
+  <trk>
+    <name>Tsho Rolpa Lake Trek</name>
+    <trkseg>
+      <trkpt lat="27.80560" lon="86.20830"><ele>1398</ele></trkpt>
+      <trkpt lat="27.80620" lon="86.20910"><ele>1420</ele></trkpt>
+      <trkpt lat="27.80710" lon="86.21050"><ele>1460</ele></trkpt>
+      <trkpt lat="27.80800" lon="86.21200"><ele>1520</ele></trkpt>
+      <trkpt lat="27.80950" lon="86.21400"><ele>1610</ele></trkpt>
+      <trkpt lat="27.81120" lon="86.21700"><ele>1730</ele></trkpt>
+      <trkpt lat="27.81350" lon="86.22050"><ele>1870</ele></trkpt>
+      <trkpt lat="27.81670" lon="86.22500"><ele>2000</ele></trkpt>
+      <trkpt lat="27.81900" lon="86.22900"><ele>2120</ele></trkpt>
+      <trkpt lat="27.82200" lon="86.23400"><ele>2260</ele></trkpt>
+      <trkpt lat="27.82500" lon="86.24000"><ele>2390</ele></trkpt>
+      <trkpt lat="27.82780" lon="86.24440"><ele>2470</ele></trkpt>
+      <trkpt lat="27.83050" lon="86.25200"><ele>2630</ele></trkpt>
+      <trkpt lat="27.83330" lon="86.26110"><ele>2810</ele></trkpt>
+      <trkpt lat="27.83600" lon="86.26900"><ele>2805</ele></trkpt>
+      <trkpt lat="27.83890" lon="86.27780"><ele>2800</ele></trkpt>
+      <trkpt lat="27.84150" lon="86.29300"><ele>3050</ele></trkpt>
+      <trkpt lat="27.84440" lon="86.31110"><ele>3343</ele></trkpt>
+      <trkpt lat="27.84650" lon="86.33200"><ele>3510</ele></trkpt>
+      <trkpt lat="27.84860" lon="86.35420"><ele>3690</ele></trkpt>
+      <trkpt lat="27.84950" lon="86.37500"><ele>3840</ele></trkpt>
+      <trkpt lat="27.85050" lon="86.39800"><ele>4010</ele></trkpt>
+      <trkpt lat="27.85140" lon="86.41940"><ele>4180</ele></trkpt>
+      <trkpt lat="27.85250" lon="86.43500"><ele>4320</ele></trkpt>
+      <trkpt lat="27.85360" lon="86.45200"><ele>4440</ele></trkpt>
+      <trkpt lat="27.85470" lon="86.47190"><ele>4580</ele></trkpt>
+    </trkseg>
+  </trk>
+</gpx>

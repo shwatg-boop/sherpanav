@@ -1,0 +1,325 @@
+[
+  {
+    "id": "p_01",
+    "trek_name": "ANNAPURNA BASE CAMP",
+    "checkpoints": "Entry: Birethanti | Exit: Birethanti/Pothana",
+    "tims_card": {
+      "cost_npr": 2000,
+      "documents_required": [
+        "A valid passport with at least six months remaining before expiration. ",
+        "Two passport-sized photos. ",
+        "A completed TIMS application form. ",
+        "Proof of travel insurance."
+      ],
+      "details": "Mandatory registration system introduced by the Nepal Tourism Board (NTB) and the Trekking Agencies Association of Nepal (TAAN) to ensure the safety, security and proper management of trekking activities in Nepal. Types of TIMS Cards: Green TIMS Card: For trekkers through registered trekking agencies. Blue TIMS Card: For Free Individual Trekkers (FITs) – no longer valid as solo trekking is banned. Pink TIMS Card: For SAARC nationals (trekking through agencies)",
+      "required": true
+    },
+    "park_permit": {
+      "cost_npr": 3000,
+      "documents_required": [
+        "A valid passport with at least six months remaining before expiration. ",
+        "Two passport-sized photos. ",
+        "A completed ACAP application form. ",
+        "Proof of travel insurance."
+      ],
+      "name": "Conservation / National Park Entry",
+      "details": "The ACAP Permit is a mandatory entry pass required for all trekkers wishing to explore the Annapurna Conservation Area, Nepal’s first and largest conservation area, established in 1986. Managed by the National Trust for Nature Conservation (NTNC), this permit helps fund conservation, infrastructure development, and local community support in the region."
+    },
+    "restricted_area": null
+  },
+  {
+    "id": "p_02",
+    "trek_name": "TSHO-ROLPA LAKE",
+    "checkpoints": "Entry: Simigaon | Exit: Simigaon",
+    "tims_card": {
+      "cost_npr": 2000,
+      "documents_required": [
+        "A valid passport with at least six months remaining before expiration. ",
+        "Two passport-sized photos. ",
+        "A completed TIMS application form. ",
+        "Proof of travel insurance."
+      ],
+      "details": "Mandatory registration system introduced by the Nepal Tourism Board (NTB) and the Trekking Agencies Association of Nepal (TAAN) to ensure the safety, security and proper management of trekking activities in Nepal. Types of TIMS Cards: Green TIMS Card: For trekkers through registered trekking agencies. Blue TIMS Card: For Free Individual Trekkers (FITs) – no longer valid as solo trekking is banned. Pink TIMS Card: For SAARC nationals (trekking through agencies)",
+      "required": true
+    },
+    "park_permit": {
+      "cost_npr": 3000,
+      "documents_required": [
+        "A valid passport with at least six months remaining before expiration. ",
+        "Two passport-sized photos. ",
+        "A completed GCAP application form. ",
+        "Proof of travel insurance."
+      ],
+      "name": "Conservation / National Park Entry",
+      "details": "The Gaurishankar Conservation Area Permit is required for all trekkers entering the Gaurishankar Conservation Area, a protected region established in 2010 and managed by the National Trust for Nature Conservation (NTNC). This area lies between the Langtang and Sagarmatha national parks and is named after the sacred Gaurishankar Himal (7,134 m). The permit fee contributes to the conservation of biodiversity, sustainable tourism, and local community development."
+    },
+    "restricted_area": null
+  },
+  {
+    "id": "p_03",
+    "trek_name": "MANASLU BASE CAMP",
+    "checkpoints": "Entry: Jagat  | Exit: Jagat ",
+    "tims_card": {
+      "cost_npr": 2000,
+      "documents_required": [
+        "A valid passport with at least six months remaining before expiration. ",
+        "Two passport-sized photos. ",
+        "A completed TIMS application form. ",
+        "Proof of travel insurance."
+      ],
+      "details": "Mandatory registration system introduced by the Nepal Tourism Board (NTB) and the Trekking Agencies Association of Nepal (TAAN) to ensure the safety, security and proper management of trekking activities in Nepal. Types of TIMS Cards: Green TIMS Card: For trekkers through registered trekking agencies. Blue TIMS Card: For Free Individual Trekkers (FITs) – no longer valid as solo trekking is banned. Pink TIMS Card: For SAARC nationals (trekking through agencies)",
+      "required": true
+    },
+    "park_permit": {
+      "cost_npr": 3000,
+      "documents_required": [
+        "A valid passport with at least six months remaining before expiration. ",
+        "Two passport-sized photos. ",
+        "A completed ACAP application form. ",
+        "Proof of travel insurance."
+      ],
+      "name": "Conservation / National Park Entry",
+      "details": "The Manaslu Conservation Area Project (MCAP) Permit is mandatory for trekkers entering the Manaslu Conservation Area—a protected region established in 1998 and managed by the National Trust for Nature Conservation (NTNC) This permit helps fund biodiversity conservation, support local communities, and enable sustainable tourism in the remote and culturally rich Gorkha District, home to rare wildlife like snow leopards and Himalayan musk deer."
+    },
+    "restricted_area": {
+      "cost_usd": 100,
+      "requires_guide": true,
+      "name": "Manaslu Restricted Areas Permit (RAP)",
+      "min_group_size": 2
+    }
+  },
+  {
+    "id": "p_04",
+    "trek_name": "EVEREST BASE CAMP",
+    "checkpoints": "Entry: Monjo | Exit: Monjo",
+    "tims_card": {
+      "cost_npr": 2000,
+      "documents_required": [
+        "A valid passport with at least six months remaining before expiration. ",
+        "Two passport-sized photos. ",
+        "A completed TIMS application form. ",
+        "Proof of travel insurance."
+      ],
+      "details": "Mandatory registration system introduced by the Nepal Tourism Board (NTB) and the Trekking Agencies Association of Nepal (TAAN) to ensure the safety, security and proper management of trekking activities in Nepal. Types of TIMS Cards: Green TIMS Card: For trekkers through registered trekking agencies. Blue TIMS Card: For Free Individual Trekkers (FITs) – no longer valid as solo trekking is banned. Pink TIMS Card: For SAARC nationals (trekking through agencies)",
+      "required": true
+    },
+    "park_permit": {
+      "cost_npr": 3000,
+      "documents_required": [
+        "A valid passport with at least six months remaining before expiration. ",
+        "Two passport-sized photos. ",
+        "A completed ACAP application form. ",
+        "Proof of travel insurance."
+      ],
+      "name": "Conservation / National Park Entry",
+      "details": "The Sagarmatha National Park Permit is required for treks within Sagarmatha National Park, a UNESCO World Heritage Site established in 1976, which includes the Everest region and surrounding alpine landscapes This permit is issued by the Department of National Parks and Wildlife Conservation (DNPWC) and managed via the Nepal Tourism Board (NTB), helping support conservation, wildlife protection, and sustainable local livelihoods ."
+    },
+    "restricted_area": null
+  },
+  {
+    "id": "p_05",
+    "trek_name": "SHEY-PHOKSUNDO LAKE",
+    "checkpoints": "Entry: Dho Tarap | Exit: Phoksundo",
+    "tims_card": {
+      "cost_npr": 2000,
+      "documents_required": [
+        "A valid passport with at least six months remaining before expiration. ",
+        "Two passport-sized photos. ",
+        "A completed TIMS application form. ",
+        "Proof of travel insurance."
+      ],
+      "details": "Mandatory registration system introduced by the Nepal Tourism Board (NTB) and the Trekking Agencies Association of Nepal (TAAN) to ensure the safety, security and proper management of trekking activities in Nepal. Types of TIMS Cards: Green TIMS Card: For trekkers through registered trekking agencies. Blue TIMS Card: For Free Individual Trekkers (FITs) – no longer valid as solo trekking is banned. Pink TIMS Card: For SAARC nationals (trekking through agencies)",
+      "required": true
+    },
+    "park_permit": {
+      "cost_npr": 3000,
+      "documents_required": [
+        "A valid passport with at least six months remaining before expiration. ",
+        "Two passport-sized photos. ",
+        "A completed SCAP application form. ",
+        "Proof of travel insurance."
+      ],
+      "name": "Conservation / National Park Entry",
+      "details": "The Shey Phoksundo National Park Permit is required for all visitors trekking in the Shey Phoksundo National Park, located in the Dolpa district of western Nepal. Established in 1984, it is Nepal’s largest national park, renowned for its pristine lakes—like the sacred Phoksundo Lake—high-altitude landscapes, and unique wildlife including snow leopards, musk deer, and blue sheep. This permit helps conserve the fragile ecosystem and supports local communities living inside the park. It is valid for single entry and must be obtained before entering the park."
+    },
+    "restricted_area": {
+      "cost_usd": 100,
+      "requires_guide": true,
+      "name": "Lower Dolpo special trekking Permits",
+      "min_group_size": 2
+    }
+  },
+  {
+    "id": "p_06",
+    "trek_name": "MAKALU BASE CAMP",
+    "checkpoints": "Entry: Num | Exit: Num",
+    "tims_card": {
+      "cost_npr": 2000,
+      "documents_required": [
+        "A valid passport with at least six months remaining before expiration. ",
+        "Two passport-sized photos. ",
+        "A completed TIMS application form. ",
+        "Proof of travel insurance."
+      ],
+      "details": "Mandatory registration system introduced by the Nepal Tourism Board (NTB) and the Trekking Agencies Association of Nepal (TAAN) to ensure the safety, security and proper management of trekking activities in Nepal. Types of TIMS Cards: Green TIMS Card: For trekkers through registered trekking agencies. Blue TIMS Card: For Free Individual Trekkers (FITs) – no longer valid as solo trekking is banned. Pink TIMS Card: For SAARC nationals (trekking through agencies)",
+      "required": true
+    },
+    "park_permit": {
+      "cost_npr": 3000,
+      "documents_required": [
+        "A valid passport with at least six months remaining before expiration. ",
+        "Two passport-sized photos. ",
+        "A completed MBCAP application form. ",
+        "Proof of travel insurance."
+      ],
+      "name": "Conservation / National Park Entry",
+      "details": "The Makalu Barun National Park & Conservation Area Permit is mandatory for all trekkers entering the protected region that encloses the Makalu‑Barun National Park—established in 1992—and its surrounding conservation area, located in northeast Nepal home to Mt. Makalu (8,485 m), Baruntse, and Chamlang This permit supports biodiversity conservation, ecological research, and sustainable tourism in one of the most biologically diverse and remote regions of Nepal ."
+    },
+    "restricted_area": {
+      "cost_usd": 100,
+      "requires_guide": true,
+      "name": "Makalu Rural Municipality Permit",
+      "min_group_size": 2
+    }
+  },
+  {
+    "id": "p_07",
+    "trek_name": "MARDI HIMAL BASE CAMP",
+    "checkpoints": "Entry: Pothana | Exit: Hemja/Melbot",
+    "tims_card": {
+      "cost_npr": 2000,
+      "documents_required": [
+        "A valid passport with at least six months remaining before expiration. ",
+        "Two passport-sized photos. ",
+        "A completed TIMS application form. ",
+        "Proof of travel insurance."
+      ],
+      "details": "Mandatory registration system introduced by the Nepal Tourism Board (NTB) and the Trekking Agencies Association of Nepal (TAAN) to ensure the safety, security and proper management of trekking activities in Nepal.",
+      "required": true
+    },
+    "park_permit": {
+      "cost_npr": 3000,
+      "documents_required": [
+        "A valid passport with at least six months remaining before expiration. ",
+        "Two passport-sized photos. ",
+        "A completed ACAP application form. ",
+        "Proof of travel insurance."
+      ],
+      "name": "Conservation / National Park Entry",
+      "details": "The ACAP Permit is a mandatory entry pass required for all trekkers wishing to explore the Annapurna Conservation Area, Nepal’s first and largest conservation area, established in 1986. Managed by the National Trust for Nature Conservation (NTNC), this permit helps fund conservation, infrastructure development, and local community support in the region."
+    },
+    "restricted_area": null
+  },
+  {
+    "id": "p_08",
+    "trek_name": "GOSAIKUNDA LAKE",
+    "checkpoints": "Entry: Syabrubesi  | Exit: Kutumgsang",
+    "tims_card": {
+      "cost_npr": 2000,
+      "documents_required": [
+        "A valid passport with at least six months remaining before expiration. ",
+        "Two passport-sized photos. ",
+        "A completed TIMS application form. ",
+        "Proof of travel insurance."
+      ],
+      "details": "Mandatory registration system introduced by the Nepal Tourism Board (NTB) and the Trekking Agencies Association of Nepal (TAAN) to ensure the safety, security and proper management of trekking activities in Nepal. Types of TIMS Cards: Green TIMS Card: For trekkers through registered trekking agencies. Blue TIMS Card: For Free Individual Trekkers (FITs) – no longer valid as solo trekking is banned. Pink TIMS Card: For SAARC nationals (trekking through agencies)",
+      "required": true
+    },
+    "park_permit": {
+      "cost_npr": 3000,
+      "documents_required": [
+        "A valid passport with at least six months remaining before expiration. ",
+        "Two passport-sized photos. ",
+        "A completed ACAP application form. ",
+        "Proof of travel insurance."
+      ],
+      "name": "Conservation / National Park Entry",
+      "details": "The Langtang National Park Permit is required for all trekkers entering the Langtang Conservation Area, Nepal’s first Himalayan national park, established in 1976. Located north of Kathmandu, the park is renowned for its rich biodiversity, Tamang culture, alpine landscapes, and sacred sites like Gosaikunda Lake. The permit fee supports conservation, sustainable tourism, and local livelihoods."
+    },
+    "restricted_area": null
+  },
+  {
+    "id": "p_09",
+    "trek_name": "LANTANG VALLEY TREK",
+    "checkpoints": "Entry: Syabrubesi  | Exit: Dhunche",
+    "tims_card": {
+      "cost_npr": 2000,
+      "documents_required": [
+        "A valid passport with at least six months remaining before expiration. ",
+        "Two passport-sized photos. ",
+        "A completed TIMS application form. ",
+        "Proof of travel insurance."
+      ],
+      "details": "Mandatory registration system introduced by the Nepal Tourism Board (NTB) and the Trekking Agencies Association of Nepal (TAAN) to ensure the safety, security and proper management of trekking activities in Nepal. Types of TIMS Cards: Green TIMS Card: For trekkers through registered trekking agencies. Blue TIMS Card: For Free Individual Trekkers (FITs) – no longer valid as solo trekking is banned. Pink TIMS Card: For SAARC nationals (trekking through agencies)",
+      "required": true
+    },
+    "park_permit": {
+      "cost_npr": 3000,
+      "documents_required": [
+        "A valid passport with at least six months remaining before expiration. ",
+        "Two passport-sized photos. ",
+        "A completed ACAP application form. ",
+        "Proof of travel insurance."
+      ],
+      "name": "Conservation / National Park Entry",
+      "details": "The Langtang National Park Permit (sometimes referred to as the Langtang Conservation Area Permit) is mandatory for all visitors trekking into Langtang National Park, Nepal’s first Himalayan national park established in 1976 ."
+    },
+    "restricted_area": null
+  },
+  {
+    "id": "p_10",
+    "trek_name": "ANNAPURNA CIRCUIT",
+    "checkpoints": "Entry: Jagat  | Exit: Jomsom and Gharkhola",
+    "tims_card": {
+      "cost_npr": 2000,
+      "documents_required": [
+        "A valid passport with at least six months remaining before expiration. ",
+        "Two passport-sized photos. ",
+        "A completed TIMS application form. ",
+        "Proof of travel insurance."
+      ],
+      "details": "Mandatory registration system introduced by the Nepal Tourism Board (NTB) and the Trekking Agencies Association of Nepal (TAAN) to ensure the safety, security and proper management of trekking activities in Nepal. Types of TIMS Cards: Green TIMS Card: For trekkers through registered trekking agencies. Blue TIMS Card: For Free Individual Trekkers (FITs) – no longer valid as solo trekking is banned. Pink TIMS Card: For SAARC nationals (trekking through agencies)",
+      "required": true
+    },
+    "park_permit": {
+      "cost_npr": 3000,
+      "documents_required": [
+        "A valid passport with at least six months remaining before expiration. ",
+        "Two passport-sized photos. ",
+        "A completed ACAP application form. ",
+        "Proof of travel insurance."
+      ],
+      "name": "Conservation / National Park Entry",
+      "details": "The ACAP Permit is a mandatory entry pass required for all trekkers wishing to explore the Annapurna Conservation Area, Nepal’s first and largest conservation area, established in 1986. Managed by the National Trust for Nature Conservation (NTNC), this permit helps fund conservation, infrastructure development, and local community support in the region."
+    },
+    "restricted_area": null
+  },
+  {
+    "id": "p_11",
+    "trek_name": "SUNDARIJAL-CHISAPANI",
+    "checkpoints": "Entry: Syabrubesi  | Exit: Jomsom and Gharkhola",
+    "tims_card": {
+      "cost_npr": 2000,
+      "documents_required": [
+        "A valid passport with at least six months remaining before expiration. ",
+        "Two passport-sized photos. ",
+        "A completed TIMS application form. ",
+        "Proof of travel insurance."
+      ],
+      "details": "Mandatory registration system introduced by the Nepal Tourism Board (NTB) and the Trekking Agencies Association of Nepal (TAAN) to ensure the safety, security and proper management of trekking activities in Nepal. Types of TIMS Cards: Green TIMS Card: For trekkers through registered trekking agencies. Blue TIMS Card: For Free Individual Trekkers (FITs) – no longer valid as solo trekking is banned. Pink TIMS Card: For SAARC nationals (trekking through agencies)",
+      "required": true
+    },
+    "park_permit": {
+      "cost_npr": 3000,
+      "documents_required": [
+        "A valid passport with at least six months remaining before expiration. ",
+        "Two passport-sized photos. ",
+        "A completed ACAP application form. ",
+        "Proof of travel insurance."
+      ],
+      "name": "Conservation / National Park Entry",
+      "details": "The ACAP Permit is a mandatory entry pass required for all trekkers wishing to explore the Annapurna Conservation Area, Nepal’s first and largest conservation area, established in 1986. Managed by the National Trust for Nature Conservation (NTNC), this permit helps fund conservation, infrastructure development, and local community support in the region."
+    },
+    "restricted_area": null
+  }
+]

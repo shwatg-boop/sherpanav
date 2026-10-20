@@ -1,0 +1,164 @@
+[
+  {
+    "id": "ws_abc",
+    "name": "Annapurna Base Camp",
+    "region": "Annapurna Sanctuary",
+    "elevation_m": 4130,
+    "lon": 83.8781,
+    "lat": 28.5302,
+    "associated_trek_id": "T007"
+  },
+  {
+    "id": "ws_pokhara",
+    "name": "Pokhara (Trailhead Gateway)",
+    "region": "Gandaki",
+    "elevation_m": 822,
+    "lon": 83.9856,
+    "lat": 28.2096,
+    "associated_trek_id": "T007"
+  },
+  {
+    "id": "ws_ktm",
+    "name": "Kathmandu (Capital Hub)",
+    "region": "Kathmandu Valley",
+    "elevation_m": 1350,
+    "lon": 85.324,
+    "lat": 27.7172,
+    "associated_trek_id": "ALL"
+  },
+  {
+    "id": "ws_ebc",
+    "name": "Everest Base Camp",
+    "region": "Khumbu",
+    "elevation_m": 5364,
+    "lon": 86.8528,
+    "lat": 28.0044,
+    "associated_trek_id": "T009"
+  },
+  {
+    "id": "ws_namche",
+    "name": "Namche Bazaar",
+    "region": "Khumbu",
+    "elevation_m": 3440,
+    "lon": 86.7144,
+    "lat": 27.8058,
+    "associated_trek_id": "T009"
+  },
+  {
+    "id": "ws_thorong",
+    "name": "Thorong La High Pass",
+    "region": "Annapurna Circuit",
+    "elevation_m": 5416,
+    "lon": 83.9372,
+    "lat": 28.7942,
+    "associated_trek_id": "T002"
+  },
+  {
+    "id": "ws_manang",
+    "name": "Manang Village",
+    "region": "Annapurna Circuit",
+    "elevation_m": 3540,
+    "lon": 84.0239,
+    "lat": 28.6644,
+    "associated_trek_id": "T002"
+  },
+  {
+    "id": "ws_langtang",
+    "name": "Kyanjin Gompa (Langtang)",
+    "region": "Langtang Region",
+    "elevation_m": 3870,
+    "lon": 85.5684,
+    "lat": 28.2144,
+    "associated_trek_id": "T004"
+  },
+  {
+    "id": "ws_tshorolpa",
+    "name": "Tsho-Rolpa Glacial Lake",
+    "region": "Rolwaling Valley",
+    "elevation_m": 4580,
+    "lon": 86.4719,
+    "lat": 27.8547,
+    "associated_trek_id": "T001"
+  },
+  {
+    "id": "ws_mardi",
+    "name": "Mardi Himal High Camp",
+    "region": "Annapurna",
+    "elevation_m": 3580,
+    "lon": 83.9114,
+    "lat": 28.4239,
+    "associated_trek_id": "T005"
+  },
+  {
+    "id": "ws_manaslu",
+    "name": "Samagaon (Manaslu Base)",
+    "region": "Manaslu Region",
+    "elevation_m": 3530,
+    "lon": 84.6333,
+    "lat": 28.5833,
+    "associated_trek_id": "T003"
+  },
+  {
+    "id": "ws_phoksundo",
+    "name": "Shey Phoksundo Lake",
+    "region": "Dolpa",
+    "elevation_m": 3611,
+    "lon": 82.9469,
+    "lat": 29.2064,
+    "associated_trek_id": "T006"
+  },
+  {
+    "id": "ws_gosaikunda",
+    "name": "Gosaikunda Lake",
+    "region": "Langtang / Helambu",
+    "elevation_m": 4380,
+    "lon": 85.4167,
+    "lat": 28.0833,
+    "associated_trek_id": "T010"
+  },
+  {
+    "id": "ws_makalu",
+    "name": "Makalu Base Camp",
+    "region": "Makalu Barun",
+    "elevation_m": 4870,
+    "lon": 87.1511,
+    "lat": 27.7058,
+    "associated_trek_id": "T008"
+  },
+  {
+    "id": "ws_islandpeak",
+    "name": "Island Peak High Camp",
+    "region": "Khumbu",
+    "elevation_m": 5600,
+    "lon": 86.938,
+    "lat": 27.915,
+    "associated_trek_id": "T011"
+  },
+  {
+    "id": "ws_north_abc",
+    "name": "North Annapurna Base Camp",
+    "region": "Myagdi / Annapurna",
+    "elevation_m": 4900,
+    "lon": 83.82,
+    "lat": 28.58,
+    "associated_trek_id": "T013"
+  },
+  {
+    "id": "ws_badimalika",
+    "name": "Badimalika Temple",
+    "region": "Bajura / Far-West",
+    "elevation_m": 4200,
+    "lon": 81.38,
+    "lat": 29.61,
+    "associated_trek_id": "T022"
+  },
+  {
+    "id": "ws_numbur",
+    "name": "Numbur Gyajo La Pass",
+    "region": "Ramechhap / Rolwaling",
+    "elevation_m": 4880,
+    "lon": 86.48,
+    "lat": 27.75,
+    "associated_trek_id": "T023"
+  }
+]

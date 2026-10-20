@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SherpaNav | Nepal Trekking & Mountain Navigation</title>
+  <meta name="description" content="Explore the unseen. Leave footprints. Take stories. Nepal's premier trekking, teahouse, and mountain navigation platform.">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+            display: ['Outfit', '"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          },
+          colors: {
+            gold: {
+              300: '#FDE047',
+              400: '#DDBA0E',
+              500: '#EAB308',
+              hover: '#F3CE1E'
+            },
+            obsidian: {
+              950: '#07080B',
+              900: '#0B0C10',
+              850: '#10121A',
+              800: '#14161F',
+              700: '#181B26',
+              600: '#222634'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Leaflet CSS & JS for OpenStreetMap (Offline Local with CDN Fallback) -->
+  <link rel="stylesheet" href="css/leaflet.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="js/leaflet.js"></script>
+
+  <!-- Google Fonts: Plus Jakarta Sans, Outfit, Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- Mobile Progressive Web App (PWA) Manifest & Meta Tags -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#080B11">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SherpaNav">
+  <script>
+    if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+      });
+    }
+  </script>
+</head>
+<body class="bg-obsidian-950 text-gray-100 flex flex-col min-h-screen relative selection:bg-amber-400 selection:text-black">
+
+  <!-- Top Viewport Scroll Progress Bar -->
+  <div id="scroll-progress"></div>
+
+  <!-- Global Ambient Cursor Aura Spotlight -->
+  <div id="cursor-glow"></div>
+
+  <!-- Top Global Header: Panoramic Horizon Command Deck -->
+  <header id="app-header" class="sticky top-0 z-40 glass-header-bar px-3 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between border-b border-white/10 backdrop-blur-2xl">
+    <!-- Brand Logo -->
+    <div class="flex items-center gap-3 cursor-pointer group shrink-0" onclick="window.app.navigateTo('explore')">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center text-obsidian-900 font-extrabold text-xl shadow-lg shadow-gold-400/25 group-hover:scale-105 group-hover:rotate-3 transition-transform">
+        🏔️
+      </div>
+      <div>
+        <div class="flex items-center gap-1.5">
+          <h1 class="text-lg lg:text-xl font-black font-display tracking-tight text-white flex items-center">
+            Sherpa<span class="text-gold-400">Nav</span>
+          </h1>
+          <span class="hidden sm:inline-block px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-amber-400/15 text-amber-300 border border-amber-400/30">
+            TOPO 2.0
+          </span>
+        </div>
+        <span class="text-[9px] text-gray-400 hidden md:block tracking-wider uppercase font-semibold">Nepal Expedition Intelligence</span>
+      </div>
+    </div>
+
+    <!-- Center Desktop: Gliding Navigation Island -->
+    <nav class="hidden lg:flex items-center justify-center">
+      <div id="nav-glider-track" class="nav-glider-track">
+        <div id="nav-glider-pill" class="nav-glider-pill"></div>
+        <a href="#explore" data-nav="explore" class="nav-glider-link nav-link-active">
+          <span>🧭</span> <span>Explore</span>
+        </a>
+        <a href="#plan-wizard" data-nav="plan-wizard" class="nav-glider-link text-amber-300 font-bold">
+          <span>✨</span> <span>Plan</span>
+        </a>
+        <a href="#route-map" data-nav="route-map" class="nav-glider-link">
+          <span>🗺️</span> <span>Route Map</span>
+        </a>
+        <a href="#accommodations" data-nav="accommodations" class="nav-glider-link">
+          <span>🏠</span> <span>Lodges</span>
+        </a>
+        <a href="#weather" data-nav="weather" class="nav-glider-link">
+          <span>🌤️</span> <span>Weather</span>
+        </a>
+        <a href="#permits" data-nav="permits" class="nav-glider-link">
+          <span>🛂</span> <span>Permits</span>
+        </a>
+        <a href="#tracker" data-nav="tracker" class="nav-glider-link">
+          <span>🩺</span> <span>AMS Log</span>
+        </a>
+        <a href="#checklist" data-nav="checklist" class="nav-glider-link">
+          <span>🎒</span> <span>Gear</span>
+        </a>
+        <a href="#calculator" data-nav="calculator" class="nav-glider-link">
+          <span>💰</span> <span>Budget</span>
+        </a>
+        <a href="#sos" data-nav="sos" class="nav-glider-link text-red-400 font-bold">
+          <span>🚨</span> <span>[SOS]</span>
+        </a>
+      </div>
+    </nav>
+
+    <!-- Header Right Controls Deck -->
+    <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+      <!-- 100% Offline Readiness Telemetry Badge -->
+      <div id="offline-telemetry-badge" class="hidden 2xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 shadow-sm cursor-help" title="100% Offline Ready: All 56 routes, 405 lodges, and topo tracks cached locally.">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>Offline Ready</span>
+      </div>
+
+      <!-- Spotlight Search Trigger (Ctrl+K) -->
+      <button onclick="window.app.openCommandPalette()" class="px-2.5 py-1 rounded-xl bg-obsidian-800/90 hover:bg-obsidian-700 border border-white/10 text-xs font-medium text-gray-300 hover:text-white transition flex items-center gap-1.5 backdrop-blur-md shadow-sm active:scale-95" title="Search routes, lodges, weather, permits (Ctrl+K)">
+        <span>🔍</span>
+        <span class="hidden sm:inline text-[11px]">Search</span>
+        <kbd class="hidden md:inline-block px-1 py-0.5 rounded text-[9px] font-mono bg-obsidian-900 border border-white/10 text-gray-400">Ctrl+K</kbd>
+      </button>
+
+      <!-- Plan a Trek Header CTA -->
+      <button onclick="window.app.startPlanTrekWizard()" class="btn-gold px-3 py-1 text-xs font-bold rounded-xl flex items-center gap-1.5 shadow-md active:scale-95 transition" title="Start guided expedition trip planner">
+        <span class="text-xs">✨</span>
+        <span class="hidden md:inline">Plan Trek</span>
+      </button>
+
+      <!-- Live Nepal Time & Atmospheric Solar Phase Radar -->
+      <div id="nepal-time-pill" class="hidden xl:flex items-center gap-2 px-3 py-1 rounded-full text-xs cursor-pointer shadow-sm hover:border-gold-400/50 transition" title="Live Nepal Standard Time (UTC+5:45)">
+        <span id="npt-icon" class="text-xs">🌄</span>
+        <span id="npt-time-text" class="font-mono font-bold text-amber-300 text-xs">--:--:-- NPT</span>
+        <span id="npt-phase-text" class="text-[10px] text-gray-400 font-semibold border-l border-white/10 pl-2">Alpenglow</span>
+      </div>
+
+      <!-- Live Mountain Weather Badge -->
+      <div id="header-weather-pill" class="hidden md:flex items-center gap-2 bg-obsidian-800/90 border border-obsidian-700/80 px-3 py-1 rounded-full text-xs cursor-pointer hover:border-gold-400/60 transition-all shadow-sm">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span class="weather-micro-bounce text-xs">⛅</span>
+        <span class="text-gray-300 text-xs font-medium">Weather...</span>
+      </div>
+
+      <!-- Tactile Micro-Audio Feedback Switcher -->
+      <button id="audio-toggle-btn" type="button" class="audio-toggle-active px-2.5 py-1 rounded-full text-[11px] font-bold border transition flex items-center gap-1 shadow-sm active:scale-95" title="Toggle tactile haptic audio feedback">
+        <span class="sound-icon text-xs">🔊</span>
+        <span class="sound-label hidden sm:inline">Sound ON</span>
+      </button>
+
+      <!-- Auth Action Button -->
+      <div id="header-auth-btn">
+        <!-- Auth button populated by auth.js -->
+      </div>
+    </div>
+  </header>
+
+  <!-- Expansive Widescreen Content Layout (Fluid 1600px Horizon Canvas) -->
+  <div class="flex-1 w-full max-w-[1600px] mx-auto">
+    <main id="main-content" class="w-full p-4 sm:p-6 lg:p-8 space-y-8">
+
+      <!-- ================= VIEW: EXPLORE ================= -->
+      <section id="view-explore" class="view-container animate-fade-in space-y-6">
+        <!-- Alpine Vista Compact Hero Banner -->
+        <div class="alpine-hero-backdrop py-3.5 px-4 lg:py-4 lg:px-6 border border-gold-400/25 relative group reveal-on-scroll">
+          <div class="alpine-hero-overlay"></div>
+          
+          <div class="relative z-10 space-y-2.5">
+            <!-- Top Row: Title, Subtitle, and Quick CTAs -->
+            <div class="flex items-center justify-between flex-wrap gap-3">
+              <div class="space-y-0.5">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-gold-400/10 border border-gold-400/30 text-gold-300 text-[10px] font-bold uppercase tracking-wider">
+                    <span>🏔️</span> <span>Nepal Topo Survey</span>
+                  </div>
+                  <h2 class="text-base sm:text-lg lg:text-xl font-black font-display text-white tracking-tight leading-tight">
+                    Himalayan Trails & <span class="text-gradient-alpenglow">High Altitude</span> Navigation
+                  </h2>
+                </div>
+                <p class="text-xs text-gray-300 hidden md:block leading-snug">
+                  56 GPS-surveyed route corridors, 405 verified offline teahouses, and Lake Louise clinical altitude telemetry.
+                </p>
+              </div>
+
+              <!-- Compact Action CTAs -->
+              <div class="flex items-center gap-2">
+                <button onclick="window.app.startPlanTrekWizard()" class="btn-gold px-4 py-1.5 text-xs flex items-center gap-1.5 shadow-lg shadow-gold-400/25 font-black rounded-xl active:scale-95 transition border border-amber-300">
+                  <span class="animate-pulse">✨</span> <span>Plan a Trek</span>
+                </button>
+                <button onclick="window.app.navigateTo('route-map', { routeId: 'ABC_R001' })" class="px-3 py-1.5 rounded-xl bg-obsidian-800/90 hover:bg-obsidian-700 border border-white/10 text-xs font-semibold text-white transition flex items-center gap-1.5 backdrop-blur-md active:scale-95 shadow">
+                  <span>🗺️</span> <span>Topo Map</span>
+                </button>
+                <button onclick="window.app.navigateTo('tracker')" class="px-3 py-1.5 rounded-xl bg-obsidian-800/90 hover:bg-obsidian-700 border border-white/10 text-xs font-semibold text-white transition flex items-center gap-1.5 backdrop-blur-md active:scale-95 shadow">
+                  <span>🩺</span> <span>AMS Log</span>
+                </button>
+                <button onclick="window.app.navigateTo('checklist')" class="px-3 py-1.5 rounded-xl bg-obsidian-800/90 hover:bg-obsidian-700 border border-white/10 text-xs font-semibold text-white transition flex items-center gap-1.5 backdrop-blur-md active:scale-95 shadow">
+                  <span>🎒</span> <span>Gear</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Bottom Row: Compact Telemetry Chips -->
+            <div class="flex flex-wrap items-center gap-2 pt-1 border-t border-white/10 text-xs">
+              <div class="telemetry-chip tilt-card cursor-pointer py-1 px-2.5 text-[11px]" title="World's Highest Peak">
+                <span>🏔️</span>
+                <span><strong data-count="8848" data-suffix="m" class="font-mono font-black text-amber-300">8,848m</strong> Sagarmatha</span>
+              </div>
+              <div class="telemetry-chip tilt-card cursor-pointer py-1 px-2.5 text-[11px]" title="GPS-surveyed Trail Corridors">
+                <span>🧭</span>
+                <span><strong data-count="56" data-suffix=" Corridors" class="font-mono font-black text-white">56 Corridors</strong> Surveyed</span>
+              </div>
+              <div class="telemetry-chip tilt-card cursor-pointer py-1 px-2.5 text-[11px]" title="Current Freezing Level Altitude">
+                <span>❄️</span>
+                <span><strong data-count="4200" data-prefix="~" data-suffix="m" class="font-mono font-black text-cyan-300">~4,200m</strong> Freezing Level</span>
+              </div>
+              <div class="telemetry-chip tilt-card cursor-pointer py-1 px-2.5 text-[11px]" title="Verified Teahouses & Lodges in Database">
+                <span>🏡</span>
+                <span><strong data-count="405" data-suffix=" Lodges" class="font-mono font-black text-emerald-300">405 Lodges</strong> Verified</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= HOME TRAIL OVERVIEW MAP BANNER ================= -->
+        <div id="home-trail-banner" class="sherpa-card p-4 lg:p-5 space-y-4 bg-obsidian-800/90 border border-gold-400/30 shadow-2xl relative transition-all duration-300">
+          
+          <!-- Banner Header & Actions -->
+          <div class="flex items-center justify-between flex-wrap gap-3">
+            <div class="flex items-center gap-2.5">
+              <span class="text-2xl">🗺️</span>
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h3 class="text-base font-bold text-white">Nepal Himalayan Trail Network</h3>
+                  <span id="home-map-routes-count" class="px-2 py-0.5 rounded-full text-[10px] bg-amber-400/20 text-amber-300 font-bold border border-amber-400/30 font-mono">
+                    All Routes Available
+                  </span>
+                </div>
+                <p class="text-xs text-gray-400 mt-0.5">Explore and select all active Himalayan routes directly from the interactive nationwide map.</p>
+              </div>
+            </div>
+
+            <!-- Controls: Reset Bounds + Maximize / Fullscreen -->
+            <div class="flex items-center gap-2">
+              <span id="home-active-route-badge" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-obsidian-900 border border-obsidian-700 text-amber-300">
+                <span>📍</span> <span id="home-active-route-name">Annapurna Base Camp</span>
+              </span>
+              <button onclick="window.app.resetHomeMapBounds()" class="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-obsidian-900 border border-obsidian-700 text-gray-300 hover:text-white hover:border-gold-400 flex items-center gap-1.5 transition" title="Fit all Nepal routes in view">
+                <span>↺</span> <span>Fit Nepal</span>
+              </button>
+              <button id="btn-toggle-home-map-max" onclick="window.app.toggleMaximizeHomeMap()" class="btn-gold px-3 py-1.5 text-xs font-bold flex items-center gap-1.5 shadow-md rounded-xl transition" title="Toggle full-screen map view">
+                <span id="btn-home-max-icon">⛶</span> <span id="btn-home-max-text">Maximise Map</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Selectable Routes Banner Strip (Carousel / Scrollable Pills) -->
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between text-[11px] text-gray-400 font-semibold px-0.5">
+              <span class="flex items-center gap-1"><span>👆</span> Select a Route to Locate on Map:</span>
+              <span class="text-[10px] text-gray-500 font-normal">Click trail on map or pill below</span>
+            </div>
+            <div id="home-route-pills-carousel" class="flex items-center gap-2 overflow-x-auto pb-1.5 pt-0.5 custom-scrollbar select-none">
+              <!-- Populated dynamically with all routes -->
+            </div>
+          </div>
+
+          <!-- Leaflet Overview Map Canvas -->
+          <div id="home-map-canvas-wrapper" class="relative rounded-xl overflow-hidden border border-obsidian-700 bg-obsidian-900 group">
+            <div id="home-overview-map" class="w-full h-[380px] lg:h-[420px] transition-all"></div>
+            
+            <!-- Map Interaction Barrier Overlay (Prevents scroll capture until clicked) -->
+            <div id="home-map-interaction-barrier" class="absolute inset-0 z-[450] bg-obsidian-950/45 backdrop-blur-[1.5px] flex items-center justify-center cursor-pointer transition-all duration-300">
+              <div class="px-4 py-2.5 rounded-2xl bg-obsidian-900/90 border border-gold-400/50 text-gold-300 text-xs font-bold shadow-2xl flex items-center gap-2.5 backdrop-blur-md transform transition-all duration-200 hover:scale-105 active:scale-95 hover:border-gold-300 hover:text-white pointer-events-auto">
+                <span class="text-base animate-bounce">👆</span>
+                <span class="tracking-wide">Click to Interact with Map</span>
+                <span class="text-[10px] text-gray-400 font-mono hidden sm:inline">(Scroll & Pan Trails)</span>
+              </div>
+            </div>
+
+            <!-- Lock Map Control Button (Shown when interaction is active) -->
+            <button id="home-map-lock-btn" type="button" onclick="window.app.lockHomeMap()" class="hidden absolute top-3 right-14 z-[450] px-3 py-1.5 rounded-xl bg-obsidian-900/90 border border-obsidian-600 hover:border-gold-400 text-xs font-semibold text-gray-200 hover:text-white backdrop-blur-md shadow-lg transition flex items-center gap-1.5 active:scale-95" title="Lock map to resume standard page scrolling">
+              <span>🔒</span>
+              <span>Lock Map</span>
+            </button>
+
+            <!-- Map Legend Overlay (Semi-transparent bottom-left chip) -->
+            <div class="absolute bottom-3 left-3 z-[400] bg-obsidian-900/90 backdrop-blur-md border border-obsidian-700 p-2.5 rounded-xl text-[10px] text-gray-300 shadow-xl hidden sm:flex items-center gap-3">
+              <span class="font-bold text-amber-400 uppercase tracking-wider">Regions:</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block"></span> Annapurna</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-sky-400 inline-block"></span> Everest</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-rose-400 inline-block"></span> Langtang</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-purple-400 inline-block"></span> Manaslu</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block"></span> Rolwaling</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-teal-400 inline-block"></span> Dolpa</span>
+            </div>
+          </div>
+
+          <!-- Selected Route Action & Preview Bar -->
+          <div id="home-route-preview-bar" class="p-3.5 rounded-xl bg-obsidian-900/80 border border-obsidian-700/80 flex items-center justify-between flex-wrap gap-3 text-xs transition-all">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-amber-400/20 text-amber-300 flex items-center justify-center text-lg font-bold shrink-0 border border-amber-400/30">
+                ⛰️
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4 id="hrp-title" class="font-bold text-white text-sm">Annapurna Base Camp Circuit</h4>
+                  <span id="hrp-region" class="px-2 py-0.5 rounded text-[10px] bg-obsidian-800 text-gray-400 font-semibold border border-obsidian-700">Annapurna</span>
+                </div>
+                <div class="flex items-center gap-3 text-gray-400 text-[11px] mt-0.5">
+                  <span>⏱️ <strong id="hrp-days" class="text-white">11 Days</strong></span>
+                  <span>📏 <strong id="hrp-distance" class="text-white">~80 km</strong></span>
+                  <span>⛰️ Max Alt: <strong id="hrp-altitude" class="text-amber-400 font-mono font-bold">4,130m</strong></span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="hrp-details-btn" onclick="window.app.navigateToActiveOverviewRoute()" class="btn-gold px-4 py-2 text-xs font-bold flex items-center gap-1.5 shadow-md">
+                <span>🧭</span> <span>Open Interactive Topo Stages →</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between flex-wrap gap-3">
+            <!-- Region Pills -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-1 max-w-full">
+              <button data-filter-region="ALL" class="px-3.5 py-1.5 rounded-full text-xs bg-gold-400 text-black font-bold transition">All Regions</button>
+              <button data-filter-region="reg_annapurna" class="px-3.5 py-1.5 rounded-full text-xs bg-obsidian-700 text-gray-300 hover:bg-obsidian-600 transition">Annapurna</button>
+              <button data-filter-region="reg_everest" class="px-3.5 py-1.5 rounded-full text-xs bg-obsidian-700 text-gray-300 hover:bg-obsidian-600 transition">Everest (Khumbu)</button>
+              <button data-filter-region="reg_langtang" class="px-3.5 py-1.5 rounded-full text-xs bg-obsidian-700 text-gray-300 hover:bg-obsidian-600 transition">Langtang</button>
+              <button data-filter-region="reg_manaslu" class="px-3.5 py-1.5 rounded-full text-xs bg-obsidian-700 text-gray-300 hover:bg-obsidian-600 transition">Manaslu</button>
+              <button data-filter-region="reg_rolwaling" class="px-3.5 py-1.5 rounded-full text-xs bg-obsidian-700 text-gray-300 hover:bg-obsidian-600 transition">Rolwaling</button>
+              <button data-filter-region="reg_dolpo" class="px-3.5 py-1.5 rounded-full text-xs bg-obsidian-700 text-gray-300 hover:bg-obsidian-600 transition">Dolpa</button>
+            </div>
+
+            <!-- Search input -->
+            <div class="relative w-full sm:w-64">
+              <input id="global-search" type="text" placeholder="Search peak, valley, or pass..." class="w-full bg-obsidian-700 border border-obsidian-600 rounded-xl px-3.5 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-gold-400 transition">
+              <span class="absolute right-3 top-2 text-xs text-gray-500">🔍</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Treks Cards Grid -->
+        <div id="treks-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Populated by app.js -->
+        </div>
+      </section>
+
+      <!-- ================= VIEW: PLAN A TREK WIZARD ================= -->
+      <section id="view-plan-wizard" class="view-container animate-fade-in hidden space-y-6">
+        <!-- Wizard Header Bar -->
+        <div class="flex items-center justify-between flex-wrap gap-4 border-b border-obsidian-700/80 pb-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold-400/10 border border-gold-400/30 text-gold-300 text-[11px] font-bold uppercase tracking-wider">
+                <span>✨</span> <span>Expedition Planner</span>
+              </span>
+              <h2 class="text-2xl font-black font-display text-white tracking-tight">Plan Your Himalayan Trek</h2>
+            </div>
+            <p class="text-xs text-gray-400 mt-1">5-Step guided expedition planning: trail selection, route variant, alpine gear, live budget & AMS safety profile.</p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button onclick="window.app.navigateTo('explore')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-gray-300 hover:text-white border border-obsidian-600 bg-obsidian-900 transition flex items-center gap-1.5">
+              <span>✕</span> <span>Exit Wizard</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 5-Step Progress HUD Track -->
+        <div class="wizard-stepper-container sherpa-card p-3 sm:p-4 bg-obsidian-850 border border-gold-400/20 shadow-xl">
+          <div class="grid grid-cols-5 gap-1.5 sm:gap-3 select-none">
+            <!-- Step 1 Pill -->
+            <button onclick="window.app.setWizardStep(1)" id="step-nav-1" class="step-nav-btn step-active">
+              <span class="step-num">1</span>
+              <div class="step-meta">
+                <span class="step-title">Trail</span>
+                <span class="step-sub hidden sm:inline">Destination</span>
+              </div>
+            </button>
+
+            <!-- Step 2 Pill -->
+            <button onclick="window.app.setWizardStep(2)" id="step-nav-2" class="step-nav-btn">
+              <span class="step-num">2</span>
+              <div class="step-meta">
+                <span class="step-title">Route</span>
+                <span class="step-sub hidden sm:inline">Variant & Days</span>
+              </div>
+            </button>
+
+            <!-- Step 3 Pill -->
+            <button onclick="window.app.setWizardStep(3)" id="step-nav-3" class="step-nav-btn">
+              <span class="step-num">3</span>
+              <div class="step-meta">
+                <span class="step-title">Gear</span>
+                <span class="step-sub hidden sm:inline">Checklist</span>
+              </div>
+            </button>
+
+            <!-- Step 4 Pill -->
+            <button onclick="window.app.setWizardStep(4)" id="step-nav-4" class="step-nav-btn">
+              <span class="step-num">4</span>
+              <div class="step-meta">
+                <span class="step-title">Budget</span>
+                <span class="step-sub hidden sm:inline">Costs</span>
+              </div>
+            </button>
+
+            <!-- Step 5 Pill -->
+            <button onclick="window.app.setWizardStep(5)" id="step-nav-5" class="step-nav-btn">
+              <span class="step-num">5</span>
+              <div class="step-meta">
+                <span class="step-title">Summary</span>
+                <span class="step-sub hidden sm:inline">AMS & Dossier</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step Containers -->
+        <div id="wizard-step-content-1" class="wizard-step-panel space-y-6"></div>
+        <div id="wizard-step-content-2" class="wizard-step-panel hidden space-y-6"></div>
+        <div id="wizard-step-content-3" class="wizard-step-panel hidden space-y-6"></div>
+        <div id="wizard-step-content-4" class="wizard-step-panel hidden space-y-6"></div>
+        <div id="wizard-step-content-5" class="wizard-step-panel hidden space-y-6"></div>
+      </section>
+
+      <!-- ================= VIEW: TREK DETAIL ================= -->
+      <section id="view-trek-detail" class="view-container animate-fade-in hidden space-y-6">
+        <button onclick="window.app.navigateTo('explore')" class="text-xs text-gold-400 hover:underline flex items-center gap-1 font-semibold">
+          ← Back to All Treks
+        </button>
+
+        <!-- Trek Hero & Metadata -->
+        <div class="sherpa-card overflow-hidden">
+          <div class="relative h-64 lg:h-80">
+            <img id="td-hero-img" src="" alt="" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-obsidian-900 via-obsidian-900/40 to-transparent"></div>
+            <div class="absolute bottom-6 left-6 right-6">
+              <span id="td-district" class="text-xs font-bold uppercase tracking-wider text-gold-400"></span>
+              <h2 id="td-title" class="text-3xl lg:text-4xl font-extrabold text-white mt-1"></h2>
+            </div>
+          </div>
+
+          <!-- Live Weather Pill for this destination -->
+          <div class="p-6 border-b border-obsidian-600">
+            <div id="td-live-weather"></div>
+          </div>
+
+          <!-- Stats Grid -->
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 p-6 bg-obsidian-800/40 text-xs border-b border-obsidian-600">
+            <div>
+              <span class="text-gray-500 block uppercase font-medium">Max Elevation</span>
+              <strong id="td-altitude" class="text-white text-sm font-mono font-bold"></strong>
+            </div>
+            <div>
+              <span class="text-gray-500 block uppercase font-medium">Duration</span>
+              <strong id="td-duration" class="text-white text-sm font-bold"></strong>
+            </div>
+            <div>
+              <span class="text-gray-500 block uppercase font-medium">Distance</span>
+              <strong id="td-distance" class="text-white text-sm font-bold"></strong>
+            </div>
+            <div>
+              <span class="text-gray-500 block uppercase font-medium">Difficulty</span>
+              <strong id="td-difficulty" class="text-white text-sm font-bold"></strong>
+            </div>
+            <div>
+              <span class="text-gray-500 block uppercase font-medium">Best Season</span>
+              <strong id="td-season" class="text-white text-sm font-bold"></strong>
+            </div>
+            <div>
+              <span class="text-gray-500 block uppercase font-medium">Permit</span>
+              <span class="inline-block px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold text-xs">Required</span>
+            </div>
+          </div>
+
+          <!-- Description & Highlights -->
+          <div class="p-6 space-y-6">
+            <div>
+              <h4 class="text-base font-bold text-white mb-2">Trek Overview</h4>
+              <p id="td-overview" class="text-sm text-gray-300 leading-relaxed"></p>
+            </div>
+            <div>
+              <h4 class="text-base font-bold text-white mb-3">Trail Highlights</h4>
+              <ul id="td-highlights" class="grid grid-cols-1 md:grid-cols-2 gap-2"></ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Available Route Variants -->
+        <div class="space-y-4">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <h3 class="text-xl font-bold text-white flex items-center gap-2">
+              <span>🗺️</span> <span>Available Route Variants</span>
+            </h3>
+            <div class="flex items-center gap-2">
+              <span id="td-variants-count" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-400/10 text-amber-300 border border-amber-400/30"></span>
+              <button onclick="window.app.openCompareVariantsModal()" class="btn-gold text-xs px-3 py-1.5 flex items-center gap-1.5 shadow-sm rounded-xl font-semibold">
+                <span>⚖️</span> <span>Compare Variants</span>
+              </button>
+            </div>
+          </div>
+          <div id="td-routes-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </div>
+      </section>
+
+      <!-- ================= VIEW: ROUTE MAP & OSM ENGINE ================= -->
+      <section id="view-route-map" class="view-container animate-fade-in hidden space-y-6">
+        <!-- Unified Route Map Floating Control Toolbar -->
+        <div id="rm-controls" class="sherpa-card p-4 glass-dock-capsule border border-white/10 shadow-2xl flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl select-none">🗺️</span>
+            <div>
+              <span id="rm-trek-name" class="text-xs text-amber-400 font-bold uppercase tracking-wider block"></span>
+              <h2 id="rm-route-title" class="text-xl font-extrabold text-white leading-tight"></h2>
+            </div>
+          </div>
+
+          <div class="flex items-center flex-wrap gap-2.5">
+            <!-- Direct Trek Selector -->
+            <select id="rm-trek-select" onchange="window.app.switchTrek(this.value)" class="bg-obsidian-900 border border-obsidian-600 hover:border-gold-400 text-white text-xs rounded-xl px-3 py-2 font-semibold focus:outline-none focus:border-amber-400 cursor-pointer shadow-md transition">
+            </select>
+            <!-- Route Variant Selector -->
+            <select id="rm-variant-select" onchange="window.app.switchRouteVariant(this.value)" class="bg-obsidian-900 border border-amber-400/40 text-amber-300 text-xs rounded-xl px-3 py-2 font-semibold focus:outline-none cursor-pointer shadow-md transition">
+            </select>
+            <!-- Field Sheet Button -->
+            <button onclick="window.app.openPrintFieldSheetModal()" class="px-3 py-2 rounded-xl text-xs font-semibold bg-obsidian-900 border border-obsidian-600 text-gray-300 hover:text-white hover:border-amber-400 flex items-center gap-1.5 transition shadow-md active:scale-95" title="Printable Offline Trail Sheet">
+              <span>🖨️</span> <span class="hidden md:inline">Print Trail Sheet</span>
+            </button>
+            <!-- GPX Importer Button -->
+            <button onclick="window.app.openTrackImporterModal()" class="btn-gold text-xs px-3.5 py-2 flex items-center gap-1.5 shadow-md rounded-xl font-bold active:scale-95" title="Import custom GPX or KML track file">
+              <span>📥</span> <span class="hidden sm:inline">Import GPX / KML</span>
+            </button>
+            <!-- Overview Button -->
+            <button onclick="window.app.navigateTo('trek-detail')" class="text-xs text-gray-400 hover:text-white px-3 py-2 rounded-xl border border-obsidian-600 hover:border-gray-500 transition active:scale-95">
+              ← Overview
+            </button>
+          </div>
+        </div>
+
+        <!-- Itinerary Chain Banner -->
+        <div class="p-3.5 rounded-xl bg-obsidian-800 border border-obsidian-600 text-xs text-gray-300 flex items-center gap-2">
+          <span class="text-amber-400 font-bold shrink-0">📍 Route Chain:</span>
+          <span id="rm-chain" class="font-mono text-[11px] truncate"></span>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="grid grid-cols-3 gap-3 text-center">
+          <div class="sherpa-card p-3">
+            <span class="text-[10px] text-gray-500 uppercase block">Total Duration</span>
+            <strong id="rm-days" class="text-white text-base"></strong>
+          </div>
+          <div class="sherpa-card p-3">
+            <span class="text-[10px] text-gray-500 uppercase block">Highest Altitude</span>
+            <strong id="rm-max-alt" class="text-amber-400 text-base font-mono"></strong>
+          </div>
+          <div class="sherpa-card p-3">
+            <span class="text-[10px] text-gray-500 uppercase block">Trail Distance</span>
+            <strong id="rm-distance" class="text-white text-base font-mono"></strong>
+          </div>
+        </div>
+
+        <!-- Dual-Pane Expedition Workbench Layout -->
+        <div class="workbench-split-grid items-start">
+          <!-- Left Column: Map Engine + Elevation HUD 2.0 + Waypoint Milestones -->
+          <div class="space-y-4">
+            <!-- Interactive OpenStreetMap Container -->
+            <div class="sherpa-card p-3.5 space-y-3">
+              <div class="flex items-center justify-between px-1 flex-wrap gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="text-lg">⛰️</span>
+                  <div>
+                    <h4 class="text-sm font-bold text-white leading-none">Topographic Contour Trail Engine</h4>
+                    <span class="text-[10px] text-gray-400">OpenTopoMap 20m Contours & GPS Traces</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span id="rm-track-status" class="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-mono font-semibold">
+                    ✓ Topo-Aligned Trail
+                  </span>
+                  <button onclick="window.mapEngine.fitRoute()" class="px-2.5 py-1 rounded-xl text-xs font-semibold bg-obsidian-900 border border-obsidian-700 text-gray-300 hover:text-white hover:border-gold-400 flex items-center gap-1 transition shadow-sm" title="Center full trail in view">
+                    <span>↺</span> <span>Fit Trail</span>
+                  </button>
+                  <button id="rm-reset-track-btn" onclick="window.app.resetCurrentTrack()" class="text-[11px] text-amber-400 hover:underline hidden">
+                    Reset Custom Track
+                  </button>
+                </div>
+              </div>
+              <div id="trail-map" class="w-full h-[460px] lg:h-[500px] rounded-xl z-10 border border-obsidian-600 shadow-inner"></div>
+            </div>
+
+            <!-- Dual-Synced Elevation Profile 2.0 HUD -->
+            <div class="sherpa-card p-4 space-y-2">
+              <div class="flex items-center justify-between">
+                <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                  <span>📈</span> <span>Elevation Profile 2.0 HUD (Live Slope & Map Sync)</span>
+                </h4>
+                <span class="text-xs text-amber-400 font-mono font-semibold">Distance vs. Altitude (Meters)</span>
+              </div>
+              <div id="elevation-chart-container" class="w-full overflow-hidden"></div>
+            </div>
+
+            <!-- Stage Waypoints & Night Stops Ribbon -->
+            <div class="sherpa-card p-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                  <span>🚩</span> <span>GPS Waypoints & High Passes</span>
+                </h4>
+                <span class="text-[10px] text-gray-400">Click any waypoint on map or curve</span>
+              </div>
+              <div id="rm-waypoints-list" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-56 overflow-y-auto pr-1 custom-scrollbar"></div>
+            </div>
+          </div>
+
+          <!-- Right Column: Day-by-Day Stage Itinerary & Teahouse Dossier Panel -->
+          <div class="sherpa-card p-5 space-y-4 lg:sticky lg:top-20 max-h-[calc(100vh-100px)] flex flex-col">
+            <div class="flex items-center justify-between border-b border-obsidian-700/80 pb-3 flex-wrap gap-2">
+              <div>
+                <h4 class="text-base font-bold text-white flex items-center gap-2">
+                  <span>📅</span> <span>Stage & Lodge Dossiers</span>
+                </h4>
+                <p class="text-[11px] text-gray-400 mt-0.5">Live day-by-day itinerary & direct contacts</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span id="rm-itinerary-count" class="text-xs text-amber-400 font-mono font-bold px-2.5 py-1 rounded-full bg-amber-400/10 border border-amber-400/30"></span>
+                <button onclick="window.app.triggerDirectPrint()" class="px-2.5 py-1 rounded-xl text-xs font-bold bg-amber-400 text-black hover:bg-amber-300 transition flex items-center gap-1 shadow-sm active:scale-95" title="Print full itinerary and topographic route map">
+                  <span>🖨️</span> <span>Print</span>
+                </button>
+              </div>
+            </div>
+            <div id="rm-itinerary-accordion" class="space-y-3 overflow-y-auto custom-scrollbar flex-1 pr-1"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= VIEW: ACCOMMODATIONS ================= -->
+      <section id="view-accommodations" class="view-container animate-fade-in hidden space-y-6">
+        <div>
+          <h2 class="text-2xl font-extrabold text-white">Teahouses, Lodges & Homestays</h2>
+          <p class="text-xs text-gray-400 mt-1">Direct verified contact numbers, capacity, pricing packages, and amenities along Himalayan trail settlements.</p>
+        </div>
+
+        <!-- Sticky Translucent Filter Dock -->
+        <div class="glass-dock-sticky sherpa-card p-4 space-y-3">
+          <div class="flex flex-wrap items-center gap-3">
+            <!-- Text Search -->
+            <div class="relative flex-1 min-w-[220px]">
+              <input id="acc-search-input" type="text" placeholder="Search lodge name, settlement, or phone..." oninput="window.app.filterAccommodations()" class="w-full bg-obsidian-900 border border-obsidian-600 rounded-xl pl-9 pr-3.5 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-gold-400 transition">
+              <span class="absolute left-3 top-2.5 text-xs text-gray-500">🔍</span>
+            </div>
+
+            <!-- Settlement Filter -->
+            <select id="acc-settlement-filter" class="bg-obsidian-900 border border-obsidian-600 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-gold-400">
+              <option value="ALL">All Settlements (152)</option>
+            </select>
+
+            <!-- Amenity Filter -->
+            <select id="acc-amenity-filter" onchange="window.app.filterAccommodations()" class="bg-obsidian-900 border border-obsidian-600 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-gold-400">
+              <option value="">All Amenities</option>
+              <option value="Hot shower">Hot Shower</option>
+              <option value="Wi-Fi">Wi-Fi</option>
+              <option value="Charging">Device Charging</option>
+              <option value="Attached">Attached Bathroom</option>
+              <option value="Bakery">Bakery / Espresso</option>
+              <option value="Heated">Heated Dining</option>
+            </select>
+
+            <!-- Price & Star Sort -->
+            <select id="acc-sort-select" onchange="window.app.filterAccommodations()" class="bg-obsidian-900 border border-obsidian-600 rounded-xl px-3 py-2 text-xs text-amber-300 focus:outline-none focus:border-gold-400 font-semibold">
+              <option value="default">Sort: Default Order</option>
+              <option value="price-asc">Price: Low to High (NPR)</option>
+              <option value="price-desc">Price: High to Low (NPR)</option>
+              <option value="rating-desc">Star Rating: Highest First</option>
+              <option value="name-asc">Name: A to Z</option>
+            </select>
+          </div>
+
+          <!-- Quick Settlement Filter Chips Carousel -->
+          <div class="space-y-1.5 pt-1.5 border-t border-obsidian-700/60">
+            <div class="flex items-center justify-between text-[11px] text-gray-400 font-semibold px-0.5">
+              <span class="flex items-center gap-1"><span>🏔️</span> Quick Settlement Filter:</span>
+              <span class="text-[10px] text-gray-500 font-normal">Click to isolate lodges</span>
+            </div>
+            <div id="acc-settlement-pills" class="flex items-center gap-2 overflow-x-auto pb-1.5 pt-0.5 custom-scrollbar select-none">
+              <!-- Populated dynamically by app.js -->
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between text-xs text-gray-400 pt-1">
+            <span id="acc-count-badge" class="font-mono text-amber-300 font-semibold">Loading lodges...</span>
+            <button onclick="window.app.resetAccommodationFilters()" class="text-[11px] text-gray-400 hover:text-amber-300 underline">Reset Filters</button>
+          </div>
+        </div>
+
+        <div id="accommodations-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </section>
+
+      <!-- ================= VIEW: LIVE WEATHER ================= -->
+      <section id="view-weather" class="view-container animate-fade-in hidden space-y-6">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div>
+            <h2 class="text-2xl font-extrabold text-white">Live Mountain Weather Stations</h2>
+            <p class="text-xs text-gray-400 mt-1">Real-time open-source weather powered by Open-Meteo across high passes and base camps.</p>
+          </div>
+          <button onclick="window.app.renderWeatherOverview()" class="btn-gold px-3.5 py-1.5 text-xs">
+            🔄 Refresh Live Data
+          </button>
+        </div>
+
+        <div id="weather-stations-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </section>
+
+      <!-- ================= VIEW: PERMITS ================= -->
+      <section id="view-permits" class="view-container animate-fade-in hidden space-y-6">
+        <div>
+          <h2 class="text-2xl font-extrabold text-white">Nepal Trekking Permits & Regulations</h2>
+          <p class="text-xs text-gray-400 mt-1">Official TIMS, Conservation Area (ACAP/MCAP), National Parks, and Restricted Area Permits rules and fee schedules.</p>
+        </div>
+        <div id="permits-list" class="space-y-4"></div>
+      </section>
+
+      <!-- ================= VIEW: LAKE LOUISE AMS TRACKER ================= -->
+      <section id="view-tracker" class="view-container animate-fade-in hidden space-y-6">
+        <div>
+          <h2 class="text-2xl font-extrabold text-white flex items-center gap-2">
+            <span>🩺</span> <span>Lake Louise AMS Clinical Tracker</span>
+          </h2>
+          <p class="text-xs text-gray-400 mt-1">Daily altitude health logger based on the international 2018 Lake Louise Consensus score for Acute Mountain Sickness.</p>
+        </div>
+
+        <!-- Real-Time Lake Louise AMS Circular Health Gauge & Telemetry HUD -->
+        <div class="sherpa-card p-6 bg-obsidian-800/90 border border-gold-400/20 shadow-2xl space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+            <!-- Circular Dial Gauge -->
+            <div class="md:col-span-5 flex flex-col items-center justify-center p-3">
+              <div class="relative w-44 h-44 flex items-center justify-center">
+                <svg class="ams-gauge-svg w-44 h-44" viewBox="0 0 120 120">
+                  <circle class="ams-gauge-track" cx="60" cy="60" r="52"></circle>
+                  <circle id="ams-gauge-arc" class="ams-gauge-arc" cx="60" cy="60" r="52" stroke="#10B981" stroke-dasharray="326.72" stroke-dashoffset="283.16"></circle>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
+                  <span id="ams-gauge-score" class="text-4xl font-black font-mono text-emerald-400">2</span>
+                  <span id="ams-gauge-status" class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-300 mt-0.5">Normal / Safe</span>
+                  <span class="text-[9px] text-gray-400 font-mono">Score / 15</span>
+                </div>
+              </div>
+
+              <!-- Rapid Ascent Warning Radar Beacon -->
+              <div id="ams-ascent-beacon" class="hidden mt-3 px-3 py-1.5 rounded-full bg-red-950/60 border border-red-500/50 text-xs text-red-300 flex items-center gap-2 ams-radar-beacon">
+                <div class="radar-dot"></div>
+                <span id="ams-ascent-beacon-text" class="text-[11px] font-bold">Rapid Ascent: > 500m Gain</span>
+              </div>
+            </div>
+
+            <!-- Telemetry Diagnosis Details -->
+            <div class="md:col-span-7 space-y-3">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold uppercase tracking-widest text-gold-400">Live Health Diagnostic</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-obsidian-900 border border-obsidian-700 text-gray-300">Lake Louise 2018</span>
+              </div>
+              <h3 id="ams-summary-title" class="text-xl font-bold text-white">Normal Acclimatization</h3>
+              <p id="ams-summary-desc" class="text-xs text-gray-300 leading-relaxed">
+                Total symptom score is within normal physiological limits. Proceed with regular schedule while keeping hydrated (3-4L/day).
+              </p>
+              
+              <div class="grid grid-cols-2 gap-3 pt-2 text-xs">
+                <div class="p-3 rounded-xl bg-obsidian-900/90 border border-obsidian-700">
+                  <span class="text-[10px] text-gray-400 uppercase font-semibold block mb-0.5">Daily Ascent Gain</span>
+                  <span id="ams-telemetry-ascent" class="font-mono font-bold text-white text-sm">+700m / 24h</span>
+                </div>
+                <div class="p-3 rounded-xl bg-obsidian-900/90 border border-obsidian-700">
+                  <span class="text-[10px] text-gray-400 uppercase font-semibold block mb-0.5">Clinical Protocol</span>
+                  <span id="ams-telemetry-action" class="font-bold text-emerald-400 text-sm">Safe to Ascend</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Evaluation Form -->
+        <div class="sherpa-card p-6 space-y-6">
+          <!-- Quick-Fill Stage Assistant -->
+          <div class="p-4 rounded-xl bg-obsidian-800/90 border border-amber-400/30 flex items-center justify-between flex-wrap gap-3">
+            <div class="flex items-center gap-2.5">
+              <span class="text-xl">🏔️</span>
+              <div>
+                <span class="text-xs font-bold text-white block">Auto-Fill Elevations From Route Stage</span>
+                <span class="text-[11px] text-gray-400">Pulls true surveyed elevations from your active itinerary for automatic rate-of-ascent checks</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <select id="ams-stage-select" class="bg-obsidian-900 border border-obsidian-600 text-amber-300 text-xs rounded-lg px-3 py-1.5 focus:border-amber-400 focus:outline-none font-semibold">
+                <option value="">Select Itinerary Stage...</option>
+              </select>
+              <button type="button" onclick="window.app.applyAMSStageElevation()" class="btn-gold px-3.5 py-1.5 text-xs font-bold">
+                Apply Altitudes
+              </button>
+            </div>
+          </div>
+
+          <form id="ams-form" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="text-xs font-semibold text-gray-300 block mb-1">Today's Sleeping Altitude (Meters)</label>
+                <input id="input-altitude" type="number" value="3500" min="500" max="8848" class="w-full bg-obsidian-800 border border-obsidian-600 rounded-lg px-3 py-2 text-sm text-white font-mono focus:border-gold-400">
+              </div>
+              <div>
+                <label class="text-xs font-semibold text-gray-300 block mb-1">Yesterday's Altitude (Meters, for ascent rate check)</label>
+                <input id="input-prev-altitude" type="number" value="2800" min="500" max="8848" class="w-full bg-obsidian-800 border border-obsidian-600 rounded-lg px-3 py-2 text-sm text-white font-mono focus:border-gold-400">
+              </div>
+            </div>
+
+            <div class="space-y-4 pt-2 border-t border-obsidian-600">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs font-bold text-gold-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <span>📊</span> <span>Lake Louise Clinical Symptoms Scoring (0 ➔ 3)</span>
+                </h4>
+                <span class="text-[10px] text-gray-400">Tactile Mountain Hardware Selectors</span>
+              </div>
+
+              <!-- Headache -->
+              <div class="space-y-2 p-3.5 rounded-xl bg-obsidian-900/70 border border-obsidian-700/70 shadow-sm">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="font-bold text-white flex items-center gap-1.5">
+                    <span>🤕</span> <span>Headache</span>
+                  </span>
+                  <span id="val-headache-text" class="text-[11px] font-mono font-bold text-amber-300">1: Mild (+1)</span>
+                </div>
+                <input id="slider-headache" type="hidden" value="1">
+                <div class="seg-btn-group" id="seg-headache">
+                  <button type="button" class="seg-btn" data-val="0" onclick="window.app.setAMSSymptom('headache', 0)">0: None</button>
+                  <button type="button" class="seg-btn seg-btn-active" data-val="1" onclick="window.app.setAMSSymptom('headache', 1)">1: Mild</button>
+                  <button type="button" class="seg-btn" data-val="2" onclick="window.app.setAMSSymptom('headache', 2)">2: Moderate</button>
+                  <button type="button" class="seg-btn" data-val="3" onclick="window.app.setAMSSymptom('headache', 3)">3: Severe</button>
+                </div>
+              </div>
+
+              <!-- Nausea -->
+              <div class="space-y-2 p-3.5 rounded-xl bg-obsidian-900/70 border border-obsidian-700/70 shadow-sm">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="font-bold text-white flex items-center gap-1.5">
+                    <span>🤢</span> <span>Nausea / Poor Appetite</span>
+                  </span>
+                  <span id="val-nausea-text" class="text-[11px] font-mono font-bold text-gray-400">0: Normal appetite</span>
+                </div>
+                <input id="slider-nausea" type="hidden" value="0">
+                <div class="seg-btn-group" id="seg-nausea">
+                  <button type="button" class="seg-btn seg-btn-active" data-val="0" onclick="window.app.setAMSSymptom('nausea', 0)">0: Good appetite</button>
+                  <button type="button" class="seg-btn" data-val="1" onclick="window.app.setAMSSymptom('nausea', 1)">1: Poor appetite</button>
+                  <button type="button" class="seg-btn" data-val="2" onclick="window.app.setAMSSymptom('nausea', 2)">2: Moderate</button>
+                  <button type="button" class="seg-btn" data-val="3" onclick="window.app.setAMSSymptom('nausea', 3)">3: Severe / Vomiting</button>
+                </div>
+              </div>
+
+              <!-- Dizziness -->
+              <div class="space-y-2 p-3.5 rounded-xl bg-obsidian-900/70 border border-obsidian-700/70 shadow-sm">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="font-bold text-white flex items-center gap-1.5">
+                    <span>😵‍💫</span> <span>Dizziness / Lightheadedness</span>
+                  </span>
+                  <span id="val-dizziness-text" class="text-[11px] font-mono font-bold text-gray-400">0: None</span>
+                </div>
+                <input id="slider-dizziness" type="hidden" value="0">
+                <div class="seg-btn-group" id="seg-dizziness">
+                  <button type="button" class="seg-btn seg-btn-active" data-val="0" onclick="window.app.setAMSSymptom('dizziness', 0)">0: None</button>
+                  <button type="button" class="seg-btn" data-val="1" onclick="window.app.setAMSSymptom('dizziness', 1)">1: Mild</button>
+                  <button type="button" class="seg-btn" data-val="2" onclick="window.app.setAMSSymptom('dizziness', 2)">2: Moderate</button>
+                  <button type="button" class="seg-btn" data-val="3" onclick="window.app.setAMSSymptom('dizziness', 3)">3: Severe</button>
+                </div>
+              </div>
+
+              <!-- Fatigue -->
+              <div class="space-y-2 p-3.5 rounded-xl bg-obsidian-900/70 border border-obsidian-700/70 shadow-sm">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="font-bold text-white flex items-center gap-1.5">
+                    <span>🥱</span> <span>Fatigue / Weakness</span>
+                  </span>
+                  <span id="val-fatigue-text" class="text-[11px] font-mono font-bold text-amber-300">1: Mild (+1)</span>
+                </div>
+                <input id="slider-fatigue" type="hidden" value="1">
+                <div class="seg-btn-group" id="seg-fatigue">
+                  <button type="button" class="seg-btn" data-val="0" onclick="window.app.setAMSSymptom('fatigue', 0)">0: Normal</button>
+                  <button type="button" class="seg-btn seg-btn-active" data-val="1" onclick="window.app.setAMSSymptom('fatigue', 1)">1: Mild</button>
+                  <button type="button" class="seg-btn" data-val="2" onclick="window.app.setAMSSymptom('fatigue', 2)">2: Moderate</button>
+                  <button type="button" class="seg-btn" data-val="3" onclick="window.app.setAMSSymptom('fatigue', 3)">3: Severe exhaustion</button>
+                </div>
+              </div>
+
+              <!-- Sleep -->
+              <div class="space-y-2 p-3.5 rounded-xl bg-obsidian-900/70 border border-obsidian-700/70 shadow-sm">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="font-bold text-white flex items-center gap-1.5">
+                    <span>🛌</span> <span>Sleep Quality (Last Night)</span>
+                  </span>
+                  <span id="val-sleep-text" class="text-[11px] font-mono font-bold text-gray-400">0: Slept well</span>
+                </div>
+                <input id="slider-sleep" type="hidden" value="0">
+                <div class="seg-btn-group" id="seg-sleep">
+                  <button type="button" class="seg-btn seg-btn-active" data-val="0" onclick="window.app.setAMSSymptom('sleep', 0)">0: Slept well</button>
+                  <button type="button" class="seg-btn" data-val="1" onclick="window.app.setAMSSymptom('sleep', 1)">1: Woke restless</button>
+                  <button type="button" class="seg-btn" data-val="2" onclick="window.app.setAMSSymptom('sleep', 2)">2: Woke many times</button>
+                  <button type="button" class="seg-btn" data-val="3" onclick="window.app.setAMSSymptom('sleep', 3)">3: Insomnia / Couldn't sleep</button>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-gold w-full py-2.5 text-sm">
+              Calculate Score & Record Daily Health Log
+            </button>
+          </form>
+
+          <!-- Result Banner -->
+          <div id="ams-result-banner" class="hidden"></div>
+        </div>
+
+        <!-- Past Logs -->
+        <div class="sherpa-card p-6 space-y-3">
+          <h4 class="text-sm font-bold text-white">Recent Altitude Health Logs</h4>
+          <div id="ams-history-list" class="space-y-2"></div>
+        </div>
+      </section>
+
+      <!-- ================= VIEW: SOS EMERGENCY ================= -->
+      <section id="view-sos" class="view-container animate-fade-in hidden space-y-6">
+        <div class="border border-red-500/40 bg-red-950/20 p-6 rounded-2xl space-y-4">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">🚨</span>
+            <div>
+              <h2 class="text-2xl font-extrabold text-red-400">Himalayan Emergency & SOS Dispatch</h2>
+              <p class="text-xs text-gray-300">Live GPS Coordinates & Offline Emergency SMS Generator for 2G / Satellite Broadcast.</p>
+            </div>
+          </div>
+
+          <!-- Geolocation Display -->
+          <div class="p-4 rounded-xl bg-obsidian-900 border border-obsidian-600">
+            <span class="text-xs text-gray-500 block mb-1">Your Exact GPS Coordinates:</span>
+            <div id="sos-coords-display" class="text-sm font-mono text-gray-300">
+              Detecting device GPS...
+            </div>
+          </div>
+
+          <!-- One-Tap SMS Generator -->
+          <div class="space-y-2">
+            <label class="text-xs font-semibold text-gray-300 block">Offline Emergency SMS Payload (Pre-formatted):</label>
+            <textarea id="sos-sms-preview" rows="3" readonly class="w-full bg-obsidian-900 border border-obsidian-600 rounded-lg p-3 text-xs text-amber-200 font-mono"></textarea>
+            <a id="btn-send-sms" href="#" class="inline-block w-full text-center py-2.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold text-sm shadow-lg shadow-red-600/30 transition">
+              📲 Launch Phone SMS to Tourist Police (1144)
+            </a>
+          </div>
+
+          <!-- 24/7 Hotline Buttons -->
+          <div class="pt-4 border-t border-red-900/50">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3">Official 24/7 Emergency Helplines:</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <a href="tel:1144" class="p-3 rounded-lg bg-obsidian-800 border border-obsidian-600 flex items-center justify-between hover:border-gold-400">
+                <span class="font-bold text-white">📞 Tourist Police Hotline</span>
+                <span class="text-gold-400 font-mono">1144</span>
+              </a>
+              <a href="tel:100" class="p-3 rounded-lg bg-obsidian-800 border border-obsidian-600 flex items-center justify-between hover:border-gold-400">
+                <span class="font-bold text-white">📞 Nepal Police Control</span>
+                <span class="text-gold-400 font-mono">100</span>
+              </a>
+              <a href="tel:061462798" class="p-3 rounded-lg bg-obsidian-800 border border-obsidian-600 flex items-center justify-between hover:border-gold-400">
+                <span class="font-bold text-white">📞 TAAN Pokhara Rescue</span>
+                <span class="text-gold-400 font-mono">061-462798</span>
+              </a>
+              <a href="tel:014440292" class="p-3 rounded-lg bg-obsidian-800 border border-obsidian-600 flex items-center justify-between hover:border-gold-400">
+                <span class="font-bold text-white">📞 Himalayan Rescue Association</span>
+                <span class="text-gold-400 font-mono">01-4440292</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= VIEW: PROFILE ================= -->
+      <section id="view-profile" class="view-container animate-fade-in hidden space-y-6">
+        <div class="sherpa-card p-6 space-y-6">
+          <div class="flex items-center justify-between flex-wrap gap-4 border-b border-obsidian-600 pb-6">
+            <div class="flex items-center gap-3">
+              <div class="w-14 h-14 rounded-full bg-gold-400 text-black flex items-center justify-center font-extrabold text-2xl">
+                👤
+              </div>
+              <div>
+                <h3 id="prof-name" class="text-xl font-bold text-white"></h3>
+                <span id="prof-email" class="text-xs text-gray-400"></span>
+              </div>
+            </div>
+            <button id="btn-logout" class="px-3.5 py-1.5 rounded-lg border border-red-500/50 text-red-400 hover:bg-red-500/20 text-xs font-semibold">
+              Sign Out
+            </button>
+          </div>
+
+          <!-- Medical & Emergency Profile Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="p-4 rounded-xl bg-obsidian-800 border border-obsidian-600 space-y-2">
+              <span class="text-gold-400 font-bold block uppercase tracking-wider">Trekker Details</span>
+              <div>Nationality: <strong id="prof-nationality" class="text-white"></strong></div>
+              <div>Blood Group: <strong id="prof-blood" class="text-white"></strong></div>
+              <div>Medical Notes: <p id="prof-medical" class="text-gray-300 mt-1"></p></div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-obsidian-800 border border-obsidian-600 space-y-2">
+              <span class="text-gold-400 font-bold block uppercase tracking-wider">Emergency Contact</span>
+              <div>Contact Name: <strong id="prof-emergency-name" class="text-white"></strong></div>
+              <div>Emergency Phone: <strong id="prof-emergency-phone" class="text-white font-mono"></strong></div>
+            </div>
+          </div>
+
+          <!-- Saved Treks -->
+          <div class="space-y-3 pt-4 border-t border-obsidian-600">
+            <h4 class="text-sm font-bold text-white">Bookmarked / Saved Treks</h4>
+            <div id="prof-saved-treks" class="space-y-2"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= VIEW: GEAR & PACKING CHECKLIST ================= -->
+      <section id="view-checklist" class="view-container animate-fade-in hidden space-y-6">
+        <div>
+          <h2 class="text-2xl font-extrabold text-white flex items-center gap-2.5">
+            <span>🎒</span> <span>Himalayan Gear & Packing Checklist</span>
+          </h2>
+          <p class="text-xs text-gray-400 mt-1">Essential alpine checklist categorized by priority, with local Thamel rental guidance and automatic progress tracking.</p>
+        </div>
+
+        <!-- Progress & Controls Bar -->
+        <div class="sherpa-card p-5 space-y-3 bg-obsidian-800/90 border border-obsidian-600">
+          <div class="flex items-center justify-between flex-wrap gap-3">
+            <div>
+              <span class="text-xs text-gray-400 block font-medium">Packing Status:</span>
+              <div class="flex items-center gap-2">
+                <span id="checklist-progress-text" class="text-lg font-bold text-amber-300 font-mono">0 of 0 packed (0%)</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="window.app.checkAllPackingItems()" class="px-3 py-1.5 rounded-lg bg-obsidian-700 hover:bg-obsidian-600 border border-obsidian-600 text-xs text-gray-300 font-semibold transition">
+                ✓ Check All
+              </button>
+              <button onclick="window.app.resetPackingChecklist()" class="px-3 py-1.5 rounded-lg bg-obsidian-700 hover:bg-obsidian-600 border border-obsidian-600 text-xs text-gray-300 font-semibold transition">
+                ↺ Reset
+              </button>
+            </div>
+          </div>
+          <!-- Progress Bar Track -->
+          <div class="w-full bg-obsidian-900 rounded-full h-2.5 overflow-hidden border border-obsidian-700">
+            <div id="checklist-progress-bar" class="bg-gradient-to-r from-amber-500 to-amber-300 h-2.5 rounded-full transition-all duration-300 w-0"></div>
+          </div>
+        </div>
+
+        <!-- Checklist Categories Container -->
+        <div id="checklist-categories" class="space-y-6">
+          <!-- Populated by app.js -->
+        </div>
+      </section>
+
+      <!-- ================= VIEW: TREK BUDGET & COST CALCULATOR ================= -->
+      <section id="view-calculator" class="view-container animate-fade-in hidden space-y-6">
+        <div>
+          <h2 class="text-2xl font-extrabold text-white flex items-center gap-2.5">
+            <span>💰</span> <span>Himalayan Trek Budget & Cost Calculator</span>
+          </h2>
+          <p class="text-xs text-gray-400 mt-1">Estimate total expenses covering official permits, tea house lodging, daily food, guide/porter wages, and trail extras in NPR and USD.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Calculator Form Inputs -->
+          <div class="lg:col-span-7 sherpa-card p-6 space-y-5 bg-obsidian-800/80">
+            <h3 class="text-base font-bold text-white border-b border-obsidian-700 pb-2 flex items-center gap-2">
+              <span>⚙️</span> Trip Parameters
+            </h3>
+
+            <!-- Trek Quick Select -->
+            <div class="space-y-1">
+              <label class="text-xs font-semibold text-gray-300">Select Trek Route</label>
+              <select id="calc-trek-select" onchange="window.app.updateCalculatorPreset(this.value)" class="w-full bg-obsidian-900 border border-obsidian-600 rounded-xl px-3 py-2 text-xs text-white focus:border-amber-400 focus:outline-none font-semibold">
+              </select>
+            </div>
+
+            <!-- Duration Slider -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <span class="text-gray-300 font-medium">Trek Duration:</span>
+                <span id="calc-days-label" class="font-bold text-amber-300 font-mono">10 Days</span>
+              </div>
+              <input id="calc-days-input" type="range" min="3" max="25" value="10" oninput="window.app.calculateBudget()" class="w-full">
+            </div>
+
+            <!-- Nationality -->
+            <div class="space-y-1">
+              <label class="text-xs font-semibold text-gray-300">Trekker Nationality (for permit fees)</label>
+              <select id="calc-nationality" onchange="window.app.calculateBudget()" class="w-full bg-obsidian-900 border border-obsidian-600 rounded-xl px-3 py-2 text-xs text-white focus:border-amber-400 focus:outline-none font-semibold">
+                <option value="Foreigner">Foreigner (Standard TIMS NPR 2,000 + Park NPR 3,000)</option>
+                <option value="SAARC">SAARC National (Discounted TIMS NPR 1,000 + Park NPR 1,500)</option>
+                <option value="Domestic">Nepali Citizen (TIMS Exempt + Park NPR 100)</option>
+              </select>
+            </div>
+
+            <!-- Accommodation Style -->
+            <div class="space-y-1">
+              <label class="text-xs font-semibold text-gray-300">Accommodation Standard</label>
+              <select id="calc-lodging-type" onchange="window.app.calculateBudget()" class="w-full bg-obsidian-900 border border-obsidian-600 rounded-xl px-3 py-2 text-xs text-white focus:border-amber-400 focus:outline-none font-semibold">
+                <option value="0">Camping / Wilderness Tent (NPR 0 lodging)</option>
+                <option value="800">Budget Teahouse (~NPR 800/night twin share)</option>
+                <option value="1500" selected>Standard Teahouse Package (~NPR 1,500/night)</option>
+                <option value="2500">En-suite / Heated Lodge where available (~NPR 2,500/night)</option>
+              </select>
+            </div>
+
+            <!-- Daily Meals Budget -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <span class="text-gray-300 font-medium">Daily Food & Hot Drinks (Dal Bhat, tea, boiled water):</span>
+                <span id="calc-meals-label" class="font-bold text-amber-300 font-mono">NPR 2,500 / day</span>
+              </div>
+              <input id="calc-meals-input" type="range" min="1500" max="4500" step="100" value="2500" oninput="window.app.calculateBudget()" class="w-full">
+              <div class="flex justify-between text-[10px] text-gray-500">
+                <span>NPR 1,500 (Basic)</span>
+                <span>NPR 2,500 (Hearty meals + garlic soup)</span>
+                <span>NPR 4,500 (Bakery + Espresso)</span>
+              </div>
+            </div>
+
+            <!-- Mountain Guide & Porter Support (Independent Options) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="space-y-1">
+                <label class="text-xs font-semibold text-gray-300 flex items-center gap-1.5">
+                  <span>🧭</span> Mountain Guide Support
+                </label>
+                <select id="calc-guide-option" onchange="window.app.calculateBudget()" class="w-full bg-obsidian-900 border border-obsidian-600 rounded-xl px-3 py-2 text-xs text-white focus:border-amber-400 focus:outline-none font-semibold">
+                  <option value="0">No Guide (Independent)</option>
+                  <option value="3500" selected>Licensed Guide (~NPR 3,500/day)</option>
+                  <option value="4500">Senior Wilderness Guide (~NPR 4,500/day)</option>
+                </select>
+              </div>
+
+              <div class="space-y-1">
+                <label class="text-xs font-semibold text-gray-300 flex items-center gap-1.5">
+                  <span>🎒</span> Porter Support
+                </label>
+                <select id="calc-porter-option" onchange="window.app.calculateBudget()" class="w-full bg-obsidian-900 border border-obsidian-600 rounded-xl px-3 py-2 text-xs text-white focus:border-amber-400 focus:outline-none font-semibold">
+                  <option value="0">No Porter (Carry Own Pack)</option>
+                  <option value="2200" selected>1 Porter (~NPR 2,200/day, max 20kg)</option>
+                  <option value="4400">2 Porters (~NPR 4,400/day, max 40kg)</option>
+                  <option value="2800">1 Porter-Guide (~NPR 2,800/day)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Extras (Hot Showers & Charging) -->
+            <div class="pt-2 border-t border-obsidian-700">
+              <label class="text-xs font-semibold text-gray-300 block mb-2">Trail Extras & Incidentals (Showers, Wi-Fi, Charging)</label>
+              <div class="grid grid-cols-3 gap-2 text-xs">
+                <label class="flex items-center gap-2 p-2 rounded-lg bg-obsidian-900 border border-obsidian-700 cursor-pointer">
+                  <input type="checkbox" id="calc-extra-shower" checked onchange="window.app.calculateBudget()" class="accent-amber-400">
+                  <span class="text-[11px] text-gray-300">Hot Shower (~NPR 400/ea)</span>
+                </label>
+                <label class="flex items-center gap-2 p-2 rounded-lg bg-obsidian-900 border border-obsidian-700 cursor-pointer">
+                  <input type="checkbox" id="calc-extra-charging" checked onchange="window.app.calculateBudget()" class="accent-amber-400">
+                  <span class="text-[11px] text-gray-300">Charging (~NPR 300/ea)</span>
+                </label>
+                <label class="flex items-center gap-2 p-2 rounded-lg bg-obsidian-900 border border-obsidian-700 cursor-pointer">
+                  <input type="checkbox" id="calc-extra-wifi" checked onchange="window.app.calculateBudget()" class="accent-amber-400">
+                  <span class="text-[11px] text-gray-300">Wi-Fi Cards (~NPR 400/ea)</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Total Calculation Breakdown -->
+          <div class="lg:col-span-5 space-y-4">
+            <div class="sherpa-card p-6 bg-gradient-to-br from-obsidian-800 to-obsidian-900 border border-amber-400/40 shadow-xl space-y-4">
+              <div class="flex items-center justify-between flex-wrap gap-2">
+                <span class="text-xs font-bold uppercase tracking-widest text-amber-400">Estimated Total Trip Cost</span>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] text-gray-400 font-semibold">Currency:</span>
+                  <select id="calc-currency-select" onchange="window.app.setCurrency(this.value)" class="bg-obsidian-950 border border-gold-400/40 rounded-lg px-2 py-0.5 text-xs text-amber-300 font-mono font-bold focus:outline-none">
+                    <option value="USD" selected>USD ($)</option>
+                    <option value="EUR">EUR (€)</option>
+                    <option value="GBP">GBP (£)</option>
+                    <option value="AUD">AUD (A$)</option>
+                    <option value="INR">INR (₹)</option>
+                    <option value="NPR">NPR (रु)</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div>
+                <div class="text-3xl font-extrabold text-white font-mono" id="calc-total-npr">NPR 0</div>
+                <div class="text-sm text-amber-300 font-semibold font-mono mt-0.5" id="calc-total-usd">≈ $0 USD</div>
+              </div>
+
+              <!-- Budget Expense Distribution Visualizer -->
+              <div class="space-y-2 pt-2 border-t border-obsidian-700/80">
+                <div class="flex items-center justify-between text-[11px]">
+                  <span class="text-gray-300 font-bold uppercase tracking-wider">Expense Allocation Distribution</span>
+                  <span id="budget-distribution-ratio" class="text-amber-300 font-mono font-bold">100% Calculated</span>
+                </div>
+                
+                <div class="budget-stacked-track">
+                  <div id="bar-seg-permits" class="budget-segment seg-permits" style="width: 15%;" title="Permits"></div>
+                  <div id="bar-seg-lodging" class="budget-segment seg-lodging" style="width: 25%;" title="Lodging"></div>
+                  <div id="bar-seg-meals"   class="budget-segment seg-meals"   style="width: 30%;" title="Food & Tea"></div>
+                  <div id="bar-seg-guide"   class="budget-segment seg-guide"   style="width: 25%;" title="Guide/Porter"></div>
+                  <div id="bar-seg-extras"  class="budget-segment seg-extras"  style="width: 5%;"  title="Extras"></div>
+                </div>
+
+                <!-- Legend Chips with Percentages -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5 text-[10px] pt-1">
+                  <span class="flex items-center gap-1.5 text-sky-300 bg-sky-950/40 px-2 py-0.5 rounded border border-sky-500/20">
+                    <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
+                    <span>Permits: <b id="pct-permits" class="font-mono">15%</b></span>
+                  </span>
+                  <span class="flex items-center gap-1.5 text-emerald-300 bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-500/20">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    <span>Lodging: <b id="pct-lodging" class="font-mono">25%</b></span>
+                  </span>
+                  <span class="flex items-center gap-1.5 text-amber-300 bg-amber-950/40 px-2 py-0.5 rounded border border-amber-500/20">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                    <span>Food: <b id="pct-meals" class="font-mono">30%</b></span>
+                  </span>
+                  <span class="flex items-center gap-1.5 text-purple-300 bg-purple-950/40 px-2 py-0.5 rounded border border-purple-500/20">
+                    <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+                    <span>Crew: <b id="pct-guide" class="font-mono">25%</b></span>
+                  </span>
+                  <span class="flex items-center gap-1.5 text-cyan-300 bg-cyan-950/40 px-2 py-0.5 rounded border border-cyan-500/20">
+                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                    <span>Extras: <b id="pct-extras" class="font-mono">5%</b></span>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Itemized Table -->
+              <div class="space-y-2.5 pt-3 border-t border-obsidian-700 text-xs">
+                <div class="flex justify-between">
+                  <span class="text-gray-400">🛂 TIMS & Park Permits:</span>
+                  <strong id="calc-breakdown-permits" class="text-white font-mono">NPR 0</strong>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-400">🏡 Teahouse Lodging:</span>
+                  <strong id="calc-breakdown-lodging" class="text-white font-mono">NPR 0</strong>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-400">🍲 Daily Meals & Tea:</span>
+                  <strong id="calc-breakdown-meals" class="text-white font-mono">NPR 0</strong>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-400">🧭 Mountain Guide Wages:</span>
+                  <strong id="calc-breakdown-guide" class="text-white font-mono">NPR 0</strong>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-400">🎒 Porter Wages:</span>
+                  <strong id="calc-breakdown-porter" class="text-white font-mono">NPR 0</strong>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-400">⚡ Trail Extras (Shower/Power):</span>
+                  <strong id="calc-breakdown-extras" class="text-white font-mono">NPR 0</strong>
+                </div>
+                <div class="flex justify-between pt-2 border-t border-obsidian-700 font-semibold text-amber-200">
+                  <span>💰 Recommended Cash Reserve (+15%):</span>
+                  <strong id="calc-breakdown-buffer" class="font-mono">NPR 0</strong>
+                </div>
+              </div>
+
+              <div class="p-3 rounded-xl bg-amber-400/10 border border-amber-400/20 text-[11px] text-amber-200 leading-relaxed">
+                💡 <em>Mountain Cash Tip:</em> Credit cards and online payment apps (eSewa/Fonepay) are rarely accepted above Namche or Chame due to network outages. Always carry your total budget + 15% buffer in physical Nepalese Rupee cash from Kathmandu or Pokhara.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Mobile Bottom Dock Navigation (Floating Island Capsule) -->
+  <nav id="mobile-nav" class="lg:hidden sticky bottom-3 z-40 mx-4 my-2 rounded-2xl glass-dock-capsule px-3 py-2 flex justify-around text-center text-[10px]">
+    <a href="#explore" data-nav="explore" class="p-1.5 flex flex-col items-center nav-active-mobile active:scale-95 transition-all">
+      <span class="text-base">🧭</span>
+      <span>Explore</span>
+    </a>
+    <a href="#plan-wizard" data-nav="plan-wizard" class="p-1.5 flex flex-col items-center text-amber-300 font-bold active:scale-95 transition-all">
+      <span class="text-base">✨</span>
+      <span>Plan</span>
+    </a>
+    <a href="#route-map" data-nav="route-map" class="p-1.5 flex flex-col items-center text-gray-400 hover:text-gray-200 active:scale-95 transition-transform">
+      <span class="text-base">🗺️</span>
+      <span>Maps</span>
+    </a>
+    <a href="#accommodations" data-nav="accommodations" class="p-1.5 flex flex-col items-center text-gray-400 hover:text-gray-200 active:scale-95 transition-transform">
+      <span class="text-base">🏠</span>
+      <span>Lodges</span>
+    </a>
+    <a href="#weather" data-nav="weather" class="p-1.5 flex flex-col items-center text-gray-400 hover:text-gray-200 active:scale-95 transition-transform">
+      <span class="text-base">🌤️</span>
+      <span>Weather</span>
+    </a>
+    <a href="#tracker" data-nav="tracker" class="p-1.5 flex flex-col items-center text-gray-400 hover:text-gray-200 active:scale-95 transition-transform">
+      <span class="text-base">🩺</span>
+      <span>AMS</span>
+    </a>
+    <a href="#sos" data-nav="sos" class="p-1.5 flex flex-col items-center text-gray-400 hover:text-gray-200 active:scale-95 transition-transform">
+      <span class="text-base">🚨</span>
+      <span>SOS</span>
+    </a>
+  </nav>
+
+  <!-- Local Auth Modal (Login / Register) -->
+  <div id="auth-modal" class="modal-overlay hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
+    <div class="sherpa-card w-full max-w-md p-6 bg-obsidian-800 border border-obsidian-600 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-obsidian-600">
+        <h3 id="auth-modal-title" class="text-lg font-bold text-white">Sign In</h3>
+        <button class="modal-close text-gray-400 hover:text-white text-lg font-bold">&times;</button>
+      </div>
+
+      <!-- Login Section -->
+      <div id="auth-login-section">
+        <form id="form-login" class="space-y-4">
+          <div class="space-y-1">
+            <label class="text-xs text-gray-300 font-medium">Email Address</label>
+            <input id="login-email" type="email" value="demo@sherpanav.com" required class="w-full bg-obsidian-700 border border-obsidian-600 rounded-lg px-3 py-2 text-sm text-white focus:border-gold-400">
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs text-gray-300 font-medium">Password</label>
+            <input id="login-password" type="password" value="password123" required class="w-full bg-obsidian-700 border border-obsidian-600 rounded-lg px-3 py-2 text-sm text-white focus:border-gold-400">
+          </div>
+          <div id="login-error" class="text-xs text-red-400 font-medium"></div>
+          <button type="submit" class="btn-gold w-full py-2.5 text-sm font-bold">Sign In Locally</button>
+        </form>
+        <div class="text-center text-xs text-gray-400 mt-4">
+          Don't have an account? <a id="switch-to-register" href="#" class="text-gold-400 font-bold hover:underline">Create Account</a>
+        </div>
+      </div>
+
+      <!-- Register Section -->
+      <div id="auth-register-section" class="hidden">
+        <form id="form-register" class="space-y-3">
+          <div class="space-y-1">
+            <label class="text-xs text-gray-300 font-medium">Full Name</label>
+            <input id="reg-name" type="text" required placeholder="e.g. John Doe" class="w-full bg-obsidian-700 border border-obsidian-600 rounded-lg px-3 py-1.5 text-sm text-white focus:border-gold-400">
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs text-gray-300 font-medium">Email Address</label>
+            <input id="reg-email" type="email" required placeholder="john@example.com" class="w-full bg-obsidian-700 border border-obsidian-600 rounded-lg px-3 py-1.5 text-sm text-white focus:border-gold-400">
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs text-gray-300 font-medium">Password</label>
+            <input id="reg-password" type="password" required class="w-full bg-obsidian-700 border border-obsidian-600 rounded-lg px-3 py-1.5 text-sm text-white focus:border-gold-400">
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs text-gray-300 font-medium">Nationality</label>
+            <select id="reg-nationality" class="w-full bg-obsidian-700 border border-obsidian-600 rounded-lg px-3 py-1.5 text-sm text-white focus:border-gold-400">
+              <option value="Foreigner">Foreigner</option>
+              <option value="SAARC">SAARC National</option>
+              <option value="Domestic">Nepali Citizen</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-xs text-gray-300 font-medium">Emergency Name</label>
+              <input id="reg-emergency-name" type="text" placeholder="Contact person" class="w-full bg-obsidian-700 border border-obsidian-600 rounded-lg px-3 py-1.5 text-sm text-white focus:border-gold-400">
+            </div>
+            <div>
+              <label class="text-xs text-gray-300 font-medium">Emergency Phone</label>
+              <input id="reg-emergency-phone" type="text" placeholder="+977..." class="w-full bg-obsidian-700 border border-obsidian-600 rounded-lg px-3 py-1.5 text-sm text-white focus:border-gold-400">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-xs text-gray-300 font-medium">Blood Group</label>
+              <input id="reg-blood-group" type="text" placeholder="e.g. O+" class="w-full bg-obsidian-700 border border-obsidian-600 rounded-lg px-3 py-1.5 text-sm text-white focus:border-gold-400">
+            </div>
+            <div>
+              <label class="text-xs text-gray-300 font-medium">Medical Allergies</label>
+              <input id="reg-medical-notes" type="text" placeholder="Asthma, etc." class="w-full bg-obsidian-700 border border-obsidian-600 rounded-lg px-3 py-1.5 text-sm text-white focus:border-gold-400">
+            </div>
+          </div>
+          <div id="reg-error" class="text-xs text-red-400 font-medium"></div>
+          <button type="submit" class="btn-gold w-full py-2.5 text-sm font-bold mt-2">Create Account</button>
+        </form>
+        <div class="text-center text-xs text-gray-400 mt-3">
+          Already have an account? <a id="switch-to-login" href="#" class="text-gold-400 font-bold hover:underline">Sign In</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: GPX / KML TRACK IMPORTER ================= -->
+  <div id="modal-track-importer" class="modal-overlay fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden animate-fade-in">
+    <div class="sherpa-card max-w-xl w-full p-6 space-y-5 border border-amber-400/40 shadow-2xl bg-obsidian-800">
+      <div class="flex items-center justify-between border-b border-obsidian-700 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">📥</span>
+          <h3 class="text-lg font-bold text-white">Import Custom GPS Trail Track (GPX / KML)</h3>
+        </div>
+        <button onclick="window.app.closeTrackImporterModal()" class="text-gray-400 hover:text-white text-lg font-bold">&times;</button>
+      </div>
+
+      <!-- Drop Zone -->
+      <div id="track-dropzone" class="border-2 border-dashed border-obsidian-600 hover:border-amber-400 rounded-2xl p-6 text-center cursor-pointer transition-all duration-200 bg-obsidian-900/60 group">
+        <input type="file" id="track-file-input" accept=".gpx,.kml" class="hidden" />
+        <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">🗺️</div>
+        <div class="text-sm font-bold text-white mb-1">Drag & Drop your .GPX or .KML file here</div>
+        <div class="text-xs text-gray-400">or click to browse from your device</div>
+        <div class="mt-3 text-[11px] text-amber-400 font-mono">Supports Google Earth (.kml), Strava, Garmin, AllTrails, Gaia GPS (.gpx)</div>
+      </div>
+
+      <!-- Parse Result / Stats Preview -->
+      <div id="track-preview-box" class="hidden p-4 rounded-xl bg-obsidian-900/80 border border-obsidian-700 space-y-3 text-xs">
+        <div class="flex items-center justify-between">
+          <span id="import-track-name" class="font-bold text-white text-sm"></span>
+          <span id="import-track-format" class="px-2 py-0.5 rounded text-[10px] bg-amber-400/20 text-amber-300 font-bold uppercase font-mono"></span>
+        </div>
+        <div class="grid grid-cols-4 gap-2 text-center py-2 border-y border-obsidian-700">
+          <div>
+            <span class="text-[10px] text-gray-500 uppercase block">Points</span>
+            <strong id="import-stat-points" class="text-white font-mono text-sm"></strong>
+          </div>
+          <div>
+            <span class="text-[10px] text-gray-500 uppercase block">Distance</span>
+            <strong id="import-stat-dist" class="text-amber-400 font-mono text-sm"></strong>
+          </div>
+          <div>
+            <span class="text-[10px] text-gray-500 uppercase block">Min / Max Alt</span>
+            <strong id="import-stat-alt" class="text-white font-mono text-sm"></strong>
+          </div>
+          <div>
+            <span class="text-[10px] text-gray-500 uppercase block">Elev Gain</span>
+            <strong id="import-stat-gain" class="text-emerald-400 font-mono text-sm"></strong>
+          </div>
+        </div>
+        <div class="text-[11px] text-gray-400">
+          ✓ Successfully parsed! This high-density track will snap to the terrain and update the interactive elevation profile in real-time.
+        </div>
+      </div>
+
+      <!-- Error Box -->
+      <div id="track-import-error" class="text-xs text-red-400 hidden p-3 rounded-lg bg-red-500/10 border border-red-500/30 font-medium"></div>
+
+      <!-- Actions -->
+      <div class="flex items-center justify-between pt-2">
+        <button id="btn-modal-reset-track" onclick="window.app.resetCurrentTrack()" class="text-xs text-amber-400 hover:underline hidden">
+          ↩️ Reset to Default Trail
+        </button>
+        <div class="flex items-center gap-2 ml-auto">
+          <button onclick="window.app.closeTrackImporterModal()" class="px-4 py-2 rounded-xl text-xs text-gray-300 hover:text-white border border-obsidian-600">
+            Cancel
+          </button>
+          <button id="btn-apply-imported-track" onclick="window.app.applyImportedTrack()" disabled class="btn-gold px-4 py-2 text-xs font-bold opacity-50 cursor-not-allowed">
+            Apply to Active Route
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: VARIANT COMPARISON MATRIX ================= -->
+  <div id="modal-compare-variants" class="modal-overlay fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden animate-fade-in">
+    <div class="sherpa-card max-w-4xl w-full p-6 space-y-4 border border-gold-400/40 shadow-2xl bg-obsidian-800 max-h-[90vh] flex flex-col">
+      <div class="flex items-center justify-between border-b border-obsidian-700 pb-3 flex-shrink-0">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">⚖️</span>
+          <div>
+            <h3 class="text-lg font-bold text-white">Route Variant Comparison Matrix</h3>
+            <p id="compare-variants-subtitle" class="text-xs text-gray-400">Compare duration, distance, pass crossings, and terrain across routes.</p>
+          </div>
+        </div>
+        <button onclick="window.app.closeCompareVariantsModal()" class="text-gray-400 hover:text-white text-xl font-bold p-1">&times;</button>
+      </div>
+
+      <!-- Scrollable Comparison Content -->
+      <div id="compare-variants-table-container" class="overflow-x-auto flex-1 py-2 custom-scrollbar">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div class="flex items-center justify-between pt-3 border-t border-obsidian-700 flex-shrink-0 text-xs">
+        <span class="text-gray-400">💡 Select any variant to load its stage-by-stage itinerary and live terrain track.</span>
+        <button onclick="window.app.closeCompareVariantsModal()" class="px-4 py-2 rounded-xl text-gray-300 hover:text-white border border-obsidian-600 bg-obsidian-900">
+          Close Matrix
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: PRINTABLE TRAIL FIELD SHEET ================= -->
+  <div id="modal-print-sheet" class="modal-overlay fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden animate-fade-in">
+    <div class="sherpa-card max-w-4xl w-full p-6 space-y-4 border border-amber-400/40 shadow-2xl bg-obsidian-800 max-h-[92vh] flex flex-col">
+      <div class="modal-header-bar flex items-center justify-between border-b border-obsidian-700 pb-3 flex-shrink-0">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">🖨️</span>
+          <div>
+            <h3 class="text-lg font-bold text-white">Printable Trail Field Sheet (Offline PDF Ready)</h3>
+            <p class="text-xs text-gray-400">Compact, printer-friendly summary with daily stages, altitudes, teahouses, and emergency contacts.</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="window.app.triggerPrintTrailSheet()" class="btn-gold px-4 py-1.5 text-xs font-bold flex items-center gap-1 shadow-md">
+            <span>🖨️</span> Print / Save PDF
+          </button>
+          <button onclick="window.app.closePrintFieldSheetModal()" class="text-gray-400 hover:text-white text-xl font-bold p-1 ml-2">&times;</button>
+        </div>
+      </div>
+
+      <!-- Printable Area -->
+      <div class="overflow-y-auto flex-1 p-2 custom-scrollbar">
+        <div id="print-sheet-content" class="bg-obsidian-900 border border-obsidian-700 p-6 rounded-2xl text-gray-200 text-xs space-y-6">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <div class="modal-footer-bar flex items-center justify-between pt-2 border-t border-obsidian-700 flex-shrink-0 text-[11px] text-gray-400">
+        <span>📄 Tip: Set "Margins: Minimum" and enable "Background Graphics" in browser print dialog for crisp layout.</span>
+        <button onclick="window.app.closePrintFieldSheetModal()" class="px-4 py-1.5 rounded-xl text-gray-300 hover:text-white border border-obsidian-600 bg-obsidian-900">
+          Close Preview
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: COMMAND PALETTE / SPOTLIGHT SEARCH ================= -->
+  <div id="modal-command-palette" class="modal-overlay fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-start justify-center pt-16 sm:pt-24 p-4 hidden animate-fade-in" onclick="if(event.target === this) window.app.closeCommandPalette()">
+    <div class="sherpa-card max-w-2xl w-full border border-gold-400/40 shadow-2xl bg-obsidian-900 flex flex-col overflow-hidden max-h-[80vh]">
+      <!-- Search Input Bar -->
+      <div class="flex items-center gap-3 p-3.5 border-b border-obsidian-700 bg-obsidian-850">
+        <span class="text-lg text-amber-400">🔍</span>
+        <input id="cmd-palette-input" type="text" placeholder="Search 56 routes, 405 lodges, weather stations, permits, or views..." oninput="window.app.filterCommandPalette(this.value)" class="w-full bg-transparent border-0 text-white placeholder-gray-500 text-sm focus:outline-none font-medium">
+        <kbd class="px-2 py-0.5 rounded text-[10px] font-mono bg-obsidian-800 border border-obsidian-700 text-gray-400">ESC</kbd>
+      </div>
+
+      <!-- Live Search Results List -->
+      <div id="cmd-palette-results" class="overflow-y-auto max-h-[60vh] p-2 space-y-1 custom-scrollbar">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Footer Help Hints -->
+      <div class="p-2.5 border-t border-obsidian-800 bg-obsidian-950/80 flex items-center justify-between text-[11px] text-gray-400">
+        <span class="flex items-center gap-2">
+          <span>Tip: Press <kbd class="px-1.5 py-0.5 rounded bg-obsidian-800 border border-obsidian-700 text-[10px] text-gray-300">↑</kbd> <kbd class="px-1.5 py-0.5 rounded bg-obsidian-800 border border-obsidian-700 text-[10px] text-gray-300">↓</kbd> to navigate, <kbd class="px-1.5 py-0.5 rounded bg-obsidian-800 border border-obsidian-700 text-[10px] text-gray-300">Enter</kbd> to jump</span>
+        </span>
+        <span class="text-amber-400/80 font-mono text-[10px]">SherpaNav Spotlight</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: TEAHOUSE DIALING ASSISTANT ================= -->
+  <div id="modal-teahouse-call" class="modal-overlay fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden animate-fade-in" onclick="if(event.target === this) window.app.closeTeahouseCallModal()">
+    <div class="sherpa-card max-w-lg w-full p-6 space-y-5 border border-gold-400/40 shadow-2xl bg-obsidian-900">
+      <div class="flex items-center justify-between border-b border-obsidian-700 pb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl">📞</span>
+          <div>
+            <h3 id="teahouse-call-name" class="text-lg font-bold text-white">Lodge Name</h3>
+            <p id="teahouse-call-settlement" class="text-xs text-amber-300 font-mono">Settlement • ~0m</p>
+          </div>
+        </div>
+        <button onclick="window.app.closeTeahouseCallModal()" class="text-gray-400 hover:text-white text-xl font-bold p-1">&times;</button>
+      </div>
+
+      <!-- Direct Dial Action Card -->
+      <div class="p-4 rounded-xl bg-obsidian-800 border border-gold-400/30 flex items-center justify-between gap-3">
+        <div>
+          <span class="text-[10px] text-gray-400 uppercase tracking-wider block font-semibold">Verified Trail Contact</span>
+          <span id="teahouse-call-number" class="text-xl font-black font-mono text-white tracking-wide">+977 98...</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="teahouse-call-copy-btn" onclick="window.app.copyTeahouseNumber()" class="px-3 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white border border-obsidian-600 bg-obsidian-900 active:scale-95 transition" title="Copy Number">
+            📋 Copy
+          </button>
+          <a id="teahouse-call-dial-link" href="#" class="btn-gold px-4 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-lg active:scale-95 transition">
+            <span>📞</span> <span>Dial Now</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Nepali Trail Phonetic Phrase Guide -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between text-xs font-bold text-white">
+          <span class="flex items-center gap-1.5"><span>🗣️</span> Essential Nepali Lodge Calling Phrases</span>
+          <span class="text-[10px] text-amber-400">Phonetic English</span>
+        </div>
+        <div class="space-y-1.5 text-xs">
+          <div class="p-2.5 rounded-lg bg-obsidian-800/80 border border-obsidian-700/80 space-y-0.5">
+            <div class="font-bold text-amber-300">"Namaste, kotha khali cha?"</div>
+            <div class="text-[11px] text-gray-300">Hello, do you have rooms available?</div>
+          </div>
+          <div class="p-2.5 rounded-lg bg-obsidian-800/80 border border-obsidian-700/80 space-y-0.5">
+            <div class="font-bold text-amber-300">"Khana ra basna kati parcha?"</div>
+            <div class="text-[11px] text-gray-300">How much for room and meals (dal bhat)?</div>
+          </div>
+          <div class="p-2.5 rounded-lg bg-obsidian-800/80 border border-obsidian-700/80 space-y-0.5">
+            <div class="font-bold text-amber-300">"Tato pani (shower) cha?"</div>
+            <div class="text-[11px] text-gray-300">Is hot water / hot shower available?</div>
+          </div>
+          <div class="p-2.5 rounded-lg bg-obsidian-800/80 border border-obsidian-700/80 space-y-0.5">
+            <div class="font-bold text-amber-300">"Charging ra Wi-Fi chalcha?"</div>
+            <div class="text-[11px] text-gray-300">Does phone battery charging and Wi-Fi work?</div>
+          </div>
+          <div class="p-2.5 rounded-lg bg-obsidian-800/80 border border-obsidian-700/80 space-y-0.5">
+            <div class="font-bold text-amber-300">"Bholi bihana chito khana milcha?"</div>
+            <div class="text-[11px] text-gray-300">Can we get an early morning breakfast tomorrow?</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-2 border-t border-obsidian-700 flex justify-end">
+        <button onclick="window.app.closeTeahouseCallModal()" class="px-4 py-1.5 rounded-xl text-xs text-gray-300 hover:text-white border border-obsidian-600 bg-obsidian-900">
+          Close Assistant
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alpine Toast Notification Container -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <!-- Preloaded Offline Data Bundle (Pre-loaded JSON dataset enabling seamless file:/// protocol execution) -->
+  <script src="data/data_bundle.js"></script>
+
+  <!-- Universal SherpaNav Standalone Application Engine (Runs identically on file:/// and http:// protocols) -->
+  <script src="js/sherpanav.bundle.js"></script>
+</body>
+</html>

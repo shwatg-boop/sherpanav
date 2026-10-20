@@ -1,0 +1,43 @@
+name: sherpanav_mobile
+description: "SherpaNav - Himalayan Trails & High Altitude Navigation for Android and iPhone"
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Offline Geospatial & Mapping
+  flutter_map: ^6.1.0
+  latlong2: ^0.9.0
+
+  # Hardware Sensors & Location
+  geolocator: ^11.0.0
+  sensors_plus: ^5.0.1
+  flutter_compass: ^0.8.0
+
+  # Utilities & Offline Storage
+  shared_preferences: ^2.2.3
+  url_launcher: ^6.2.6
+  intl: ^0.19.0
+  cupertino_icons: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/data/treks.json
+    - assets/data/routes.json
+    - assets/data/itineraries.json
+    - assets/data/accommodations.json
+    - assets/data/permits.json
+    - assets/data/weather_stations.json
+    - assets/data/trail_tracks.json
