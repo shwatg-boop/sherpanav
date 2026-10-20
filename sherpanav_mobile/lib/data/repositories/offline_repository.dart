@@ -43,25 +43,46 @@ class OfflineRepository {
   List<RouteModel> routes = [];
   Map<String, List<RouteStage>> itineraries = {};
   List<Accommodation> accommodations = [];
-  Map<String, dynamic> permits = {};
-  Map<String, dynamic> weatherStations = {};
+  List<dynamic> permits = [];
+  List<dynamic> weatherStations = [];
   Map<String, dynamic> trailTracks = {};
 
   Future<void> initialize() async {
     if (_isLoaded) return;
 
+    // 1. Load Treks
     try {
-      // 1. Load Treks
       final treksStr = await rootBundle.loadString('assets/data/treks.json');
       final List<dynamic> treksJson = json.decode(treksStr);
       treks = treksJson.map((j) => Trek.fromJson(j)).toList();
+    } catch (e) {
+      debugPrint('Error loading treks: $e');
+    }
 
-      // 2. Load Routes
+    // 2. Load Routes
+    try {
       final routesStr = await rootBundle.loadString('assets/data/routes.json');
       final List<dynamic> routesJson = json.decode(routesStr);
       routes = routesJson.map((j) => RouteModel.fromJson(j)).toList();
+    } catch (e) {
+      debugPrint('Error loading routes: $e');
+    }
 
-      // 3. Load Itineraries
+    // 3. Load Trail Tracks (All 56 Himalayan routes)
+    try {
+      final tracksStr = await rootBundle.loadString('assets/data/trail_tracks.json');
+      final dynamic decodedTracks = json.decode(tracksStr);
+      if (decodedTracks is Map<String, dynamic>) {
+        trailTracks = decodedTracks;
+      } else if (decodedTracks is Map) {
+        trailTracks = Map<String, dynamic>.from(decodedTracks);
+      }
+    } catch (e) {
+      debugPrint('Error loading trail tracks: $e');
+    }
+
+    // 4. Load Itineraries
+    try {
       final itinStr = await rootBundle.loadString('assets/data/itineraries.json');
       final Map<String, dynamic> itinJson = json.decode(itinStr);
       itinJson.forEach((k, v) {
@@ -69,29 +90,46 @@ class OfflineRepository {
           itineraries[k] = v.map((s) => RouteStage.fromJson(s)).toList();
         }
       });
+    } catch (e) {
+      debugPrint('Error loading itineraries: $e');
+    }
 
-      // 4. Load Accommodations
+    // 5. Load Accommodations
+    try {
       final accStr = await rootBundle.loadString('assets/data/accommodations.json');
       final List<dynamic> accJson = json.decode(accStr);
       accommodations = accJson.map((j) => Accommodation.fromJson(j)).toList();
-
-      // 5. Load Permits
-      final permitsStr = await rootBundle.loadString('assets/data/permits.json');
-      permits = json.decode(permitsStr);
-
-      // 6. Load Weather Stations
-      final wsStr = await rootBundle.loadString('assets/data/weather_stations.json');
-      weatherStations = json.decode(wsStr);
-
-      // 7. Load Trail Tracks
-      final tracksStr = await rootBundle.loadString('assets/data/trail_tracks.json');
-      trailTracks = json.decode(tracksStr);
-
-      _isLoaded = true;
     } catch (e) {
-      // Fallback safeguard
-      _isLoaded = true;
+      debugPrint('Error loading accommodations: $e');
     }
+
+    // 6. Load Permits
+    try {
+      final permitsStr = await rootBundle.loadString('assets/data/permits.json');
+      final dynamic permDecoded = json.decode(permitsStr);
+      if (permDecoded is List) {
+        permits = permDecoded;
+      } else if (permDecoded is Map<String, dynamic>) {
+        permits = permDecoded.values.toList();
+      }
+    } catch (e) {
+      debugPrint('Error loading permits: $e');
+    }
+
+    // 7. Load Weather Stations
+    try {
+      final wsStr = await rootBundle.loadString('assets/data/weather_stations.json');
+      final dynamic wsDecoded = json.decode(wsStr);
+      if (wsDecoded is List) {
+        weatherStations = wsDecoded;
+      } else if (wsDecoded is Map<String, dynamic>) {
+        weatherStations = wsDecoded.values.toList();
+      }
+    } catch (e) {
+      debugPrint('Error loading weather stations: $e');
+    }
+
+    _isLoaded = true;
   }
 
   Trek? getTrekById(String id) {
@@ -171,7 +209,7 @@ class OfflineRepository {
 
   List<OverviewTrailTrack> getAllOverviewTracks() {
     final List<OverviewTrailTrack> list = [];
-    final Set<String> renderedPrefixes = {};
+    final Set<String> renderedTrekIds = {};
 
     for (final trek in treks) {
       final trekRoutes = getRoutesByTrekId(trek.id);
@@ -179,9 +217,8 @@ class OfflineRepository {
       final primaryRoute = trekRoutes.where((r) => r.variantTag.toLowerCase().contains('classic')).firstOrNull ?? trekRoutes.first;
       final coords = getCoordinatesForRoute(primaryRoute.id);
       if (coords.length > 1) {
-        final prefix = primaryRoute.id.split('_').first.split('-').first;
-        if (!renderedPrefixes.contains(prefix)) {
-          renderedPrefixes.add(prefix);
+        if (!renderedTrekIds.contains(trek.id)) {
+          renderedTrekIds.add(trek.id);
           list.add(OverviewTrailTrack(
             routeId: primaryRoute.id,
             routeTitle: primaryRoute.title,

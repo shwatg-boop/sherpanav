@@ -31,6 +31,17 @@ class _RouteMapScreenState extends State<RouteMapScreen> {
     if (widget.initialRouteId == null) {
       displayMode = MapDisplayMode.allTrails;
     }
+    if (!OfflineRepository.instance.isLoaded) {
+      OfflineRepository.instance.initialize().then((_) {
+        if (mounted) {
+          setState(() {
+            if (widget.initialRouteId == null) {
+              selectedRouteId = OfflineRepository.instance.routes.firstOrNull?.id ?? 'ABC_R001';
+            }
+          });
+        }
+      });
+    }
   }
 
   void _fitRouteBounds(List<LatLng> coords) {
