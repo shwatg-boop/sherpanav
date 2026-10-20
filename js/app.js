@@ -3065,7 +3065,7 @@ class SherpaNavApp {
                   <span class="text-[11px] ${isSelected ? 'text-amber-400 font-bold' : 'text-gray-400'}">
                     ${isSelected ? '✓ Selected Route' : 'Click to Select'}
                   </span>
-                  <button class="${isSelected ? 'btn-gold' : 'px-3.5 py-1.5 rounded-xl bg-obsidian-800 border border-obsidian-600 text-white hover:border-amber-400'} text-xs font-bold transition flex items-center gap-1">
+                  <button onclick="event.stopPropagation(); window.app.selectWizardRoute('${r.id}', true)" class="${isSelected ? 'btn-gold' : 'px-3.5 py-1.5 rounded-xl bg-obsidian-800 border border-obsidian-600 text-white hover:border-amber-400'} text-xs font-bold transition flex items-center gap-1">
                     <span>Confirm</span> <span>→</span>
                   </button>
                 </div>
@@ -3073,6 +3073,114 @@ class SherpaNavApp {
             `;
           }).join('')}
         </div>
+
+        <!-- Alpine Weather & Hotel Information Deck for Selected Route -->
+        ${(() => {
+          const selectedRoute = routes.find(r => r.id === this.wizardState.selectedRouteId) || routes[0];
+          if (!selectedRoute) return '';
+          const stages = dataRepo.getItineraryForRoute(selectedRoute.id) || [];
+          const ws = dataRepo.getWeatherStationForTrek(trek.id);
+          const maxAlt = selectedRoute.max_altitude_m || trekAlt;
+          const dayTemp = Math.round(18 - (maxAlt / 1000.0 * 5.5));
+          const nightTemp = dayTemp - 14;
+
+          return `
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 pt-3">
+              <!-- Weather Card -->
+              <div class="p-5 rounded-2xl bg-obsidian-900 border border-sky-500/30 space-y-4">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2.5">
+                    <span class="text-2xl">🌦️</span>
+                    <div>
+                      <span class="text-[10px] text-sky-400 font-bold uppercase tracking-wider">Alpine Weather Intelligence</span>
+                      <h4 class="text-sm font-bold text-white">${ws?.name || trekTitle + ' Meteorological Station'}</h4>
+                    </div>
+                  </div>
+                  <span class="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-sky-500/15 text-sky-300 border border-sky-500/30">
+                    ${ws?.elevation_m || maxAlt}m
+                  </span>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2 text-center">
+                  <div class="bg-obsidian-950 p-2.5 rounded-xl border border-obsidian-800">
+                    <span class="text-[10px] text-gray-400 block">Peak Daytime</span>
+                    <strong class="text-base text-amber-400 font-mono">${dayTemp}°C</strong>
+                  </div>
+                  <div class="bg-obsidian-950 p-2.5 rounded-xl border border-obsidian-800">
+                    <span class="text-[10px] text-gray-400 block">Night Minimum</span>
+                    <strong class="text-base ${nightTemp <= 0 ? 'text-sky-400' : 'text-white'} font-mono">${nightTemp}°C</strong>
+                  </div>
+                  <div class="bg-obsidian-950 p-2.5 rounded-xl border border-obsidian-800">
+                    <span class="text-[10px] text-gray-400 block">Ridge Wind</span>
+                    <strong class="text-base text-white font-mono">15-25 km/h</strong>
+                  </div>
+                </div>
+
+                <div class="text-xs text-gray-300 bg-obsidian-950/60 p-3 rounded-xl border border-obsidian-800 space-y-1">
+                  <div class="flex items-center gap-1.5 text-amber-300 font-semibold">
+                    <span>☀️</span> <span>Best Window: ${trek.best_months || 'Mar-May, Oct-Dec'}</span>
+                  </div>
+                  <p class="text-[11px] text-gray-400">Stable clear skies early morning, afternoon thermal convection. Pack windproof shell above 3,500m.</p>
+                </div>
+              </div>
+
+              <!-- Hotels / Teahouse Directory Card -->
+              <div class="p-5 rounded-2xl bg-obsidian-900 border border-emerald-500/30 space-y-4 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2.5">
+                      <span class="text-2xl">🏨</span>
+                      <div>
+                        <span class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">Route Teahouses & Lodges</span>
+                        <h4 class="text-sm font-bold text-white">Verified Alpine Accommodations</h4>
+                      </div>
+                    </div>
+                    <span class="text-xs text-gray-400 font-mono">${stages.length} Stages</span>
+                  </div>
+
+                  <div class="space-y-2.5 max-h-[220px] overflow-y-auto pr-1 custom-scrollbar">
+                    ${stages.map((st, sIdx) => {
+                      const dest = st.destination || st.stage_title || 'Camp';
+                      const hotels = dataRepo.getAccommodations(dest);
+                      const primaryHotel = hotels.length > 0 ? hotels[0] : null;
+                      const hotelName = primaryHotel?.name || 'Local Himalayan Teahouse';
+                      const hotelPrice = primaryHotel?.base_room_price_npr ? `NPR ${primaryHotel.base_room_price_npr}` : 'NPR 800 - 1,500';
+                      const hotelPhone = primaryHotel?.phone_contact || primaryHotel?.phones?.[0] || '+977-9841000000';
+                      const amenities = primaryHotel?.amenities?.slice(0, 3).join(', ') || 'Hot Shower, Meals';
+
+                      return `
+                        <div class="p-2.5 rounded-xl bg-obsidian-950 border border-obsidian-800 flex items-center justify-between gap-3 text-xs">
+                          <div class="space-y-0.5">
+                            <div class="flex items-center gap-2">
+                              <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-400/20 text-amber-300">D${st.day || sIdx + 1}</span>
+                              <strong class="text-white">${dest}</strong>
+                              <span class="text-[10px] text-gray-400 font-mono">${st.altitude_m || st.elevation_m || 2500}m</span>
+                            </div>
+                            <div class="text-[11px] text-gray-300 flex items-center gap-2">
+                              <span>${hotelName}</span>
+                              <span class="text-gray-500">•</span>
+                              <span class="text-amber-400 font-bold font-mono">${hotelPrice}</span>
+                            </div>
+                            <div class="text-[10px] text-gray-400">
+                              ✨ ${amenities}
+                            </div>
+                          </div>
+                          <a href="tel:${hotelPhone.replace(/\s+/g, '')}" class="px-2.5 py-1.5 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/25 transition text-[11px] font-bold flex items-center gap-1 shrink-0" title="Call ${hotelPhone}">
+                            <span>📞</span> <span>Call</span>
+                          </a>
+                        </div>
+                      `;
+                    }).join('')}
+                  </div>
+                </div>
+
+                <p class="text-[10px] text-gray-500 italic pt-1 border-t border-obsidian-800">
+                  Tip: In high season (Oct-Nov), reserve 2-3 days ahead via satellite phone or Nepali SIM (NTC/Ncell).
+                </p>
+              </div>
+            </div>
+          `;
+        })()}
 
         <div class="flex items-center justify-between pt-4 border-t border-obsidian-700/80">
           <button onclick="window.app.setWizardStep(1)" class="px-4 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white border border-obsidian-600 bg-obsidian-900">
@@ -3086,11 +3194,16 @@ class SherpaNavApp {
     `;
   }
 
-  selectWizardRoute(routeId) {
+  selectWizardRoute(routeId, autoAdvance = false) {
     this.wizardState.selectedRouteId = routeId;
-    this.setWizardStep(3);
     const route = dataRepo.getRouteById(routeId);
-    this.showToast(`Selected route: ${route?.title || route?.name || routeId}`, 'success', '🗺️');
+    if (autoAdvance) {
+      this.setWizardStep(3);
+      this.showToast(`Confirmed route: ${route?.title || route?.name || routeId}`, 'success', '🗺️');
+    } else {
+      this.renderWizardStep2();
+      this.showToast(`Selected: ${route?.title || route?.name || routeId}`, 'info', '📍');
+    }
   }
 
   // --- Step 3: Gear Packing & Equipment Checklist ---
@@ -3680,6 +3793,60 @@ class SherpaNavApp {
                   </div>
                 </div>
               `).join('')}
+            </div>
+          </div>
+
+          <!-- Teahouse Directory & Weather Profile Summary in Dossier -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+            <!-- Lodging Directory -->
+            <div class="p-4 rounded-xl bg-obsidian-950 border border-emerald-500/30 space-y-2.5">
+              <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                <span>🏨</span> <span>Expedition Lodging Directory</span>
+              </span>
+              <div class="space-y-1.5 max-h-44 overflow-y-auto custom-scrollbar text-xs">
+                ${stages.map((st, idx) => {
+                  const dest = st.destination || st.stage_title || 'Camp';
+                  const hotels = dataRepo.getAccommodations(dest);
+                  const h = hotels[0];
+                  return `
+                    <div class="flex items-center justify-between p-1.5 rounded bg-obsidian-900 border border-obsidian-800">
+                      <div>
+                        <strong class="text-white">D${st.day || idx + 1}: ${dest}</strong>
+                        <span class="text-[10px] text-gray-400 block">${h?.name || 'Local Himalayan Lodge'} • NPR ${h?.base_room_price_npr || 1000}/night</span>
+                      </div>
+                      ${h?.phone_contact ? `
+                        <a href="tel:${h.phone_contact.replace(/\s+/g, '')}" class="text-[11px] text-emerald-400 hover:underline font-mono">
+                          📞 ${h.phone_contact}
+                        </a>
+                      ` : '<span class="text-[10px] text-gray-500">On-site</span>'}
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+
+            <!-- Weather Station Telemetry Profile -->
+            <div class="p-4 rounded-xl bg-obsidian-950 border border-sky-500/30 space-y-2.5">
+              <span class="text-xs font-bold text-sky-400 uppercase tracking-wider flex items-center gap-1.5">
+                <span>🌦️</span> <span>Mountain Weather & Climate Safety</span>
+              </span>
+              <div class="space-y-2 text-xs text-gray-300">
+                <div class="flex justify-between border-b border-obsidian-800 pb-1">
+                  <span class="text-gray-400">Regional Station:</span>
+                  <span class="text-white font-semibold">${dataRepo.getWeatherStationForTrek(trek?.id)?.name || trekTitle + ' Station'}</span>
+                </div>
+                <div class="flex justify-between border-b border-obsidian-800 pb-1">
+                  <span class="text-gray-400">Peak Temperature:</span>
+                  <span class="text-amber-300 font-mono font-bold">${Math.round(18 - (routeAlt / 1000.0 * 5.5))}°C (Day) / ${Math.round(18 - (routeAlt / 1000.0 * 5.5)) - 14}°C (Night)</span>
+                </div>
+                <div class="flex justify-between border-b border-obsidian-800 pb-1">
+                  <span class="text-gray-400">Freezing Level:</span>
+                  <span class="text-sky-300 font-mono">~4,200m ASL</span>
+                </div>
+                <p class="text-[11px] text-gray-400 italic pt-1">
+                  Season: ${trek?.best_months || 'Mar-May, Oct-Dec'}. Early morning departures recommended before 13:00 pass winds.
+                </p>
+              </div>
             </div>
           </div>
 

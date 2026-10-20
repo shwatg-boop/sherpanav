@@ -238,4 +238,44 @@ class OfflineRepository {
   }
 
   List<Accommodation> getAccommodations() => accommodations;
+
+  Map<String, dynamic>? getWeatherStationForTrek(String? trekId) {
+    if (weatherStations.isEmpty) return null;
+    if (trekId != null) {
+      for (final ws in weatherStations) {
+        if (ws is Map && ws['associated_trek_id'] == trekId) {
+          return Map<String, dynamic>.from(ws);
+        }
+      }
+    }
+    // Fallback: match by trek region name
+    final trek = getTrekById(trekId ?? '');
+    if (trek != null) {
+      final reg = trek.region.toLowerCase();
+      for (final ws in weatherStations) {
+        if (ws is Map) {
+          final wsReg = (ws['region'] ?? '').toString().toLowerCase();
+          final wsName = (ws['name'] ?? '').toString().toLowerCase();
+          if (reg.contains(wsReg) || wsReg.contains(reg) || reg.contains(wsName)) {
+            return Map<String, dynamic>.from(ws);
+          }
+        }
+      }
+    }
+    // Default to first station or null
+    final first = weatherStations.firstOrNull;
+    return first is Map ? Map<String, dynamic>.from(first) : null;
+  }
+
+  List<Accommodation> getAccommodationsForSettlement(String settlementName) {
+    if (settlementName.isEmpty) return [];
+    final s = settlementName.trim().toLowerCase();
+    final direct = accommodations.where((a) => a.settlementName.toLowerCase() == s).toList();
+    if (direct.isNotEmpty) return direct;
+    return accommodations.where((a) =>
+      a.settlementName.toLowerCase().contains(s) ||
+      s.contains(a.settlementName.toLowerCase()) ||
+      a.name.toLowerCase().contains(s)
+    ).toList();
+  }
 }

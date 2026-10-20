@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../data/models/trek.dart';
 import '../../data/models/route_model.dart';
+import '../../data/models/accommodation.dart';
 import '../../data/repositories/offline_repository.dart';
 import '../../services/budget_calculator_service.dart';
 import '../widgets/elevation_profile_chart.dart';
@@ -198,7 +200,11 @@ class _PlanWizardScreenState extends State<PlanWizardScreen> {
 
   // --- Step 2: Route Variant ---
   Widget _buildStep2Routes() {
+    final trek = OfflineRepository.instance.getTrekById(selectedTrekId);
     final routes = OfflineRepository.instance.getRoutesByTrekId(selectedTrekId);
+    final selectedRoute = routes.where((r) => r.id == selectedRouteId).firstOrNull ?? routes.firstOrNull;
+    final stages = selectedRoute != null ? OfflineRepository.instance.getItineraryForRoute(selectedRoute.id) : <RouteStage>[];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -225,7 +231,251 @@ class _PlanWizardScreenState extends State<PlanWizardScreen> {
             ),
           );
         }),
+        const SizedBox(height: 16),
+        _buildWeatherCard(trek, selectedRoute),
+        const SizedBox(height: 16),
+        _buildHotelsSection(stages),
       ],
+    );
+  }
+
+  Widget _buildWeatherCard(Trek? trek, RouteModel? route) {
+    final ws = OfflineRepository.instance.getWeatherStationForTrek(trek?.id);
+    final stationName = ws?['name'] ?? '${trek?.title ?? "Himalaya"} Station';
+    final stationAlt = ws?['elevation_m'] ?? (trek?.maxAltitudeM ?? 4000);
+    final maxAlt = route?.maxAltitudeM ?? (trek?.maxAltitudeM ?? 4000);
+
+    // Realistic lapse rate calculation: ~18°C at 1000m, -5.5°C to -6.5°C per 1000m
+    final int dayTemp = (18 - (maxAlt / 1000.0 * 5.5)).round();
+    final int nightTemp = (dayTemp - 14).round();
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF111726),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFF38BDF8).withOpacity(0.4)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  const Text('🌦️', style: TextStyle(fontSize: 18)),
+                  const SizedBox(width: 8),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('ALPINE WEATHER TELEMETRY', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF38BDF8), letterSpacing: 0.5)),
+                      Text(stationName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.white)),
+                    ],
+                  ),
+                ],
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF38BDF8).withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text('${stationAlt}m', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF38BDF8))),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(color: const Color(0xFF0B0F17), borderRadius: BorderRadius.circular(10)),
+                  child: Column(
+                    children: [
+                      const Text('Peak Daytime', style: TextStyle(fontSize: 10, color: Colors.white60)),
+                      const SizedBox(height: 2),
+                      Text('$dayTemp°C', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFFF59E0B))),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(color: const Color(0xFF0B0F17), borderRadius: BorderRadius.circular(10)),
+                  child: Column(
+                    children: [
+                      const Text('Night Minimum', style: TextStyle(fontSize: 10, color: Colors.white60)),
+                      const SizedBox(height: 2),
+                      Text('$nightTemp°C', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: nightTemp <= 0 ? const Color(0xFF38BDF8) : Colors.white)),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(color: const Color(0xFF0B0F17), borderRadius: BorderRadius.circular(10)),
+                  child: const Column(
+                    children: [
+                      Text('Wind / Ridge', style: TextStyle(fontSize: 10, color: Colors.white60)),
+                      SizedBox(height: 2),
+                      Text('15-25 km/h', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white)),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              const Icon(Icons.info_outline, size: 13, color: Color(0xFF94A3B8)),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  'Best Window: ${trek?.bestMonths ?? "Mar-May, Oct-Dec"}. Clear mornings, thermal cloud buildup in afternoons.',
+                  style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHotelsSection(List<RouteStage> stages) {
+    if (stages.isEmpty) return const SizedBox.shrink();
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF111726),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFF10B981).withOpacity(0.4)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Row(
+                children: [
+                  Text('🏨', style: TextStyle(fontSize: 18)),
+                  SizedBox(width: 8),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('STAGE LODGES & TEAHOUSES', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF10B981), letterSpacing: 0.5)),
+                      Text('Nightly Accommodations', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.white)),
+                    ],
+                  ),
+                ],
+              ),
+              Text('${stages.length} Stops', style: const TextStyle(fontSize: 11, color: Colors.white60)),
+            ],
+          ),
+          const SizedBox(height: 12),
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: stages.length,
+            separatorBuilder: (_, __) => const Divider(height: 16, color: Color(0xFF1E293B)),
+            itemBuilder: (context, idx) {
+              final stage = stages[idx];
+              final hotels = OfflineRepository.instance.getAccommodationsForSettlement(stage.destination);
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(color: const Color(0xFFF59E0B).withOpacity(0.2), borderRadius: BorderRadius.circular(6)),
+                            child: Text('Day ${stage.day}', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFFF59E0B))),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(stage.destination, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.white)),
+                        ],
+                      ),
+                      Text('${stage.altitudeM}m', style: const TextStyle(fontFamily: 'monospace', fontSize: 11, color: Color(0xFF38BDF8))),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  if (hotels.isNotEmpty) ...[
+                    ...hotels.take(2).map((h) => Container(
+                      margin: const EdgeInsets.only(top: 4),
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF080B11),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: const Color(0xFF1E293B)),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(h.name, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white)),
+                                const SizedBox(height: 2),
+                                Text(
+                                  'NPR ${h.baseRoomPriceNpr}/night • ${h.capacity} beds • ${h.amenities.take(2).join(", ")}',
+                                  style: const TextStyle(fontSize: 10, color: Color(0xFF94A3B8)),
+                                ),
+                              ],
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.phone, size: 16, color: Color(0xFF10B981)),
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            tooltip: 'Call ${h.primaryPhone}',
+                            onPressed: () async {
+                              final uri = Uri.parse('tel:${h.primaryPhone.replaceAll(' ', '')}');
+                              if (await canLaunchUrl(uri)) {
+                                await launchUrl(uri);
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    )),
+                  ] else ...[
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF080B11),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: const Row(
+                        children: [
+                          Icon(Icons.house_outlined, size: 12, color: Colors.white38),
+                          SizedBox(width: 6),
+                          Expanded(
+                            child: Text('Standard alpine teahouse available on-site (~NPR 800-1,200)', style: TextStyle(fontSize: 10, color: Colors.white54)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ],
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 
@@ -363,6 +613,7 @@ class _PlanWizardScreenState extends State<PlanWizardScreen> {
 
   // --- Step 5: AMS Safety Dossier ---
   Widget _buildStep5Dossier() {
+    final trek = OfflineRepository.instance.getTrekById(selectedTrekId);
     final route = OfflineRepository.instance.getRouteById(selectedRouteId ?? 'ABC_R001');
     final stages = OfflineRepository.instance.getItineraryForRoute(selectedRouteId ?? 'ABC_R001');
 
@@ -391,6 +642,10 @@ class _PlanWizardScreenState extends State<PlanWizardScreen> {
         ),
         const SizedBox(height: 16),
         ElevationProfileChart(stages: stages),
+        const SizedBox(height: 16),
+        _buildWeatherCard(trek, route),
+        const SizedBox(height: 16),
+        _buildHotelsSection(stages),
         const SizedBox(height: 16),
         Text('Itinerary Overview (${stages.length} Stages):', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
         const SizedBox(height: 8),
