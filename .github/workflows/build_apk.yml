@@ -29,6 +29,21 @@ jobs:
           channel: 'stable'
           cache: true
 
+      - name: Regenerate Official Android Harness & Restore Alpine Assets
+        run: |
+          cd sherpanav_mobile
+          # Backup custom files
+          cp pubspec.yaml /tmp/pubspec.yaml
+          cp android/app/src/main/AndroidManifest.xml /tmp/AndroidManifest.xml
+          
+          # Remove manually created android folder and let Flutter generate canonical harness
+          rm -rf android
+          flutter create --platforms=android --org com.sherpanav .
+          
+          # Restore our custom configurations
+          cp /tmp/pubspec.yaml pubspec.yaml
+          cp /tmp/AndroidManifest.xml android/app/src/main/AndroidManifest.xml
+
       - name: Install Dependencies
         run: |
           cd sherpanav_mobile
