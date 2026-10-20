@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import '../../data/models/route_model.dart';
+import '../../data/models/trek.dart';
 import '../../data/repositories/offline_repository.dart';
 import '../widgets/altimeter_hud.dart';
 import '../widgets/elevation_profile_chart.dart';
