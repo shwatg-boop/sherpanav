@@ -6,23 +6,77 @@ import 'route_map_screen.dart';
 
 class ExploreScreen extends StatefulWidget {
   final Function(String routeId)? onOpenRouteMap;
-  const ExploreScreen({super.key, this.onOpenRouteMap});
+  final String? initialRegion;
+
+  const ExploreScreen({
+    super.key,
+    this.onOpenRouteMap,
+    this.initialRegion,
+  });
 
   @override
-  State<ExploreScreen> createState() => _ExploreScreenState();
+  State<ExploreScreen> createState() => ExploreScreenState();
 }
 
-class _ExploreScreenState extends State<ExploreScreen> {
+class ExploreScreenState extends State<ExploreScreen> {
   String selectedRegion = 'ALL';
-  final List<String> regions = ['ALL', 'Annapurna', 'Everest', 'Langtang', 'Manaslu', 'Mustang', 'Dolpo'];
+  final List<String> regions = [
+    'ALL',
+    'Annapurna',
+    'Everest',
+    'Langtang',
+    'Manaslu',
+    'Rolwaling',
+    'Dolpo',
+    'Mustang',
+    'Makalu',
+    'Kanchenjunga',
+    'Far-West',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialRegion != null && widget.initialRegion!.isNotEmpty) {
+      selectedRegion = widget.initialRegion!;
+    }
+  }
+
+  void selectRegion(String region) {
+    setState(() {
+      selectedRegion = region;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final allTreks = OfflineRepository.instance.treks;
     final filteredTreks = allTreks.where((t) {
       if (selectedRegion == 'ALL') return true;
-      final match = '${t.region} ${t.district}'.toLowerCase();
-      return match.contains(selectedRegion.toLowerCase());
+      final match = '${t.region} ${t.district} ${t.title}'.toLowerCase();
+      final reg = selectedRegion.toLowerCase();
+      if (reg.contains('everest') || reg.contains('khumbu')) {
+        return match.contains('everest') || match.contains('khumbu') || match.contains('solukhumbu');
+      }
+      if (reg.contains('langtang') || reg.contains('helambu')) {
+        return match.contains('langtang') || match.contains('helambu') || match.contains('gosaikunda') || match.contains('rasuwa');
+      }
+      if (reg.contains('dolpo') || reg.contains('phoksundo')) {
+        return match.contains('dolpa') || match.contains('dolpo') || match.contains('phoksundo');
+      }
+      if (reg.contains('far-west') || reg.contains('api') || reg.contains('badimalika')) {
+        return match.contains('far-west') || match.contains('api') || match.contains('badimalika') || match.contains('darchula');
+      }
+      if (reg.contains('rolwaling') || reg.contains('gaurishankar')) {
+        return match.contains('rolwaling') || match.contains('gaurishankar') || match.contains('tsho') || match.contains('numbur');
+      }
+      if (reg.contains('mustang')) {
+        return match.contains('mustang');
+      }
+      if (reg.contains('kanchenjunga')) {
+        return match.contains('kanchenjunga') || match.contains('mundum');
+      }
+      return match.contains(reg);
     }).toList();
 
     return Scaffold(

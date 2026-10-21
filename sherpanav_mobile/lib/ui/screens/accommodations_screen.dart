@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../data/models/accommodation.dart';
 import '../../data/repositories/offline_repository.dart';
+import '../../utils/phone_helper.dart';
 
 class AccommodationsScreen extends StatefulWidget {
   const AccommodationsScreen({super.key});
@@ -84,13 +84,8 @@ class _AccommodationsScreenState extends State<AccommodationsScreen> {
                         ),
                         IconButton(
                           icon: const Icon(Icons.phone, color: Color(0xFF10B981)),
-                          onPressed: () async {
-                            final clean = lodge.primaryPhone.replaceAll(RegExp(r'[^0-9+]'), '');
-                            final uri = Uri.parse('tel:$clean');
-                            if (await canLaunchUrl(uri)) {
-                              await launchUrl(uri);
-                            }
-                          },
+                          tooltip: 'Call ${lodge.primaryPhone}',
+                          onPressed: () => PhoneHelper.dial(context, lodge.primaryPhone),
                         ),
                       ],
                     ),

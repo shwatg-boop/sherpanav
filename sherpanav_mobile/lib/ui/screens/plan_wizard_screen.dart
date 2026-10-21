@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../data/models/trek.dart';
 import '../../data/models/route_model.dart';
 import '../../data/models/accommodation.dart';
 import '../../data/repositories/offline_repository.dart';
 import '../../services/budget_calculator_service.dart';
+import '../../utils/phone_helper.dart';
 import '../widgets/elevation_profile_chart.dart';
 
 class PlanWizardScreen extends StatefulWidget {
@@ -442,12 +442,7 @@ class _PlanWizardScreenState extends State<PlanWizardScreen> {
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),
                             tooltip: 'Call ${h.primaryPhone}',
-                            onPressed: () async {
-                              final uri = Uri.parse('tel:${h.primaryPhone.replaceAll(' ', '')}');
-                              if (await canLaunchUrl(uri)) {
-                                await launchUrl(uri);
-                              }
-                            },
+                            onPressed: () => PhoneHelper.dial(context, h.primaryPhone),
                           ),
                         ],
                       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../services/emergency_telemetry_service.dart';
 import '../../services/altitude_fusion_service.dart';
+import '../../utils/phone_helper.dart';
 
 class EmergencySOSScreen extends StatelessWidget {
   const EmergencySOSScreen({super.key});
@@ -74,7 +75,8 @@ class EmergencySOSScreen extends StatelessWidget {
                   foregroundColor: Colors.white,
                 ),
                 onPressed: () {
-                  EmergencyTelemetryService.instance.sendSmsEmergency(
+                  PhoneHelper.sendSms(
+                    context,
                     EmergencyTelemetryService.hraRescuePhone,
                     smsPayload,
                   );
@@ -95,7 +97,7 @@ class EmergencySOSScreen extends StatelessWidget {
               title: const Text('Himalayan Rescue Association (HRA)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
               subtitle: const Text('+977 1 4268969 • Medical Evacuation'),
               trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-              onTap: () => EmergencyTelemetryService.instance.dialEmergencyPhone(EmergencyTelemetryService.hraRescuePhone),
+              onTap: () => PhoneHelper.dial(context, EmergencyTelemetryService.hraRescuePhone),
             ),
             const SizedBox(height: 8),
 
@@ -106,7 +108,7 @@ class EmergencySOSScreen extends StatelessWidget {
               title: const Text('Tourist Police Nepal', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
               subtitle: const Text('Toll Free 1144 • Emergency Search'),
               trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-              onTap: () => EmergencyTelemetryService.instance.dialEmergencyPhone(EmergencyTelemetryService.policeTouristPhone),
+              onTap: () => PhoneHelper.dial(context, EmergencyTelemetryService.policeTouristPhone),
             ),
 
             const SizedBox(height: 24),

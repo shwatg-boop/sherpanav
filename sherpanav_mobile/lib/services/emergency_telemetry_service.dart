@@ -25,24 +25,35 @@ class EmergencyTelemetryService {
            'STATUS: Trekker requires wilderness medical evacuation.';
   }
 
-  Future<void> dialEmergencyPhone(String phoneNumber) async {
+  Future<bool> dialEmergencyPhone(String phoneNumber) async {
     final cleanPhone = phoneNumber.replaceAll(RegExp(r'[^0-9+]'), '');
     final Uri url = Uri.parse('tel:$cleanPhone');
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
+    try {
+      if (await canLaunchUrl(url)) {
+        return await launchUrl(url, mode: LaunchMode.externalApplication);
+      }
+      return await launchUrl(url);
+    } catch (e) {
+      return false;
     }
   }
 
-  Future<void> sendSmsEmergency(String recipient, String body) async {
+  Future<bool> sendSmsEmergency(String recipient, String body) async {
+    final clean = recipient.replaceAll(RegExp(r'[^0-9+]'), '');
     final Uri smsUri = Uri(
       scheme: 'sms',
-      path: recipient,
+      path: clean,
       queryParameters: <String, String>{
         'body': body,
       },
     );
-    if (await canLaunchUrl(smsUri)) {
-      await launchUrl(smsUri);
+    try {
+      if (await canLaunchUrl(smsUri)) {
+        return await launchUrl(smsUri, mode: LaunchMode.externalApplication);
+      }
+      return await launchUrl(smsUri);
+    } catch (e) {
+      return false;
     }
   }
 }
